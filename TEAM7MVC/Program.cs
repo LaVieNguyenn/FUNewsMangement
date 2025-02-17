@@ -1,3 +1,7 @@
+using Team7MVC.DAL.DAOs;
+using Team7MVC.DAL.DAOs.NewArticleDAO;
+using Team7MVC.DAL.Repositories;
+
 namespace Team7MVC
 {
     public class Program
@@ -7,7 +11,10 @@ namespace Team7MVC
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-      builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews();
+            //New Article
+            builder.Services.AddSingleton<INewArticleDAO, NewArticleDAO>();
+            builder.Services.AddSingleton<INewsArticleRepository, NewsArticleRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
