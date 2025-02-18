@@ -6,16 +6,14 @@
 @{
     var list = await _service.GetAllAsync();
     var newsArticles = await _newsArticleService.GetAllNewsArticlesAsync(); // Fetch news articles
-
 }
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    console.log("Script loaded successfully!"); // Confirms script runs
     document.addEventListener("DOMContentLoaded", function () {
-            document.addEventListener("DOMContentLoaded", function () {
-        console.log("Script loaded successfully!"); // Confirms script runs
+        console.log("Script loaded successfully!");
 
         var editModal = document.getElementById("editCategoryModal");
 
@@ -25,34 +23,35 @@
         }
 
         editModal.addEventListener("show.bs.modal", function (event) {
-            console.log("Modal is opening!"); // Confirms event is detected
+            console.log("Modal is opening!");
 
             var button = event.relatedTarget; // Button that triggered the modal
-
             if (!button) {
-                console.error("No button detected. Event.relatedTarget is null.");
+                console.error("No button detected.");
                 return;
             }
 
-            console.log("Button clicked, extracting data..."); // Confirms button click detected
+            console.log("Button clicked, extracting data...");
 
+            // Extract data attributes
             var categoryId = button.getAttribute("data-id");
             var categoryName = button.getAttribute("data-name");
             var categoryDescription = button.getAttribute("data-description");
             var parentId = button.getAttribute("data-parentid");
-            var isActive = button.getAttribute("data-isactive") === "True"; // Convert string to boolean
+            var isActive = button.getAttribute("data-isactive") === "True";
 
-            console.log("Selected CategoryId:", categoryId); // Logs to Console
+            console.log("Selected CategoryId:", categoryId);
 
-            document.getElementById("CategoryId").value = categoryId || "";
-            document.getElementById("CategoryName").value = categoryName || "";
-            document.getElementById("CategoryDescription").value = categoryDescription || "";
-            document.getElementById("ParentCategoryId").value = parentId || "";
-            document.getElementById("IsActive").checked = isActive;
+            // Set values inside the modal
+            document.getElementById("editCategoryId").value = categoryId || "";
+            document.getElementById("editCategoryName").value = categoryName || "";
+            document.getElementById("editCategoryDescription").value = categoryDescription || "";
+            document.getElementById("editParentCategoryId").value = parentId || "";
+            document.getElementById("editIsActive").checked = isActive;
         });
     });
-
 </script>
+
 
 
 <div class="page-title">
@@ -115,7 +114,7 @@
                     </div>
 
                 <!-- Modal for Editing Category -->
-              
+                
                 <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -125,23 +124,22 @@
                             </div>
                             <div class="modal-body">
                                 <form id="editCategoryForm" asp-controller="Category" asp-action="SaveEditedCategory">
-
+                                
                                     <!-- Hidden field for CategoryId -->
-                                    <input type="hidden" id="CategoryId" name="CategoryId" />
-
+                                    <!-- Hidden field for CategoryId -->
+                                    <input type="hidden" id="editCategoryId" name="CategoryId" />
 
                                     <div class="mb-3">
-                                        <label for="CategoryName" class="form-label">Category Name</label>
-                                        <!-- asp-for ensures proper binding -->
-                                        <input type="text" asp-for="@Model.CategoryName" id="CategoryName" name="CategoryName" class="form-control" required />
+                                        <label for="editCategoryName" class="form-label">Category Name</label>
+                                        <input type="text" id="editCategoryName" name="CategoryName" class="form-control" required />
                                     </div>
                                     <div class="mb-3">
-                                        <label for="CategoryDescription" class="form-label">Category Description</label>
-                                        <input type="text" asp-for="@Model.CategoryDescription" id="CategoryDescription" name="CategoryDescription" class="form-control" />
+                                        <label for="editCategoryDescription" class="form-label">Category Description</label>
+                                        <input type="text" id="editCategoryDescription" name="CategoryDescription" class="form-control" />
                                     </div>
                                     <div class="mb-3">
-                                        <label for="ParentCategoryId" class="form-label">Parent Category</label>
-                                        <select asp-for="ParentCategoryId" id="ParentCategoryId" name="ParentCategoryId" class="form-control">
+                                        <label for="editParentCategoryId" class="form-label">Parent Category</label>
+                                        <select id="editParentCategoryId" name="ParentCategoryId" class="form-control">
                                             <option value="">None</option>
                                             @foreach (var category in list.Where(c => c.ParentCategoryId == null))
                                             {
@@ -150,9 +148,10 @@
                                         </select>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="IsActive" class="form-label">Is Active</label>
-                                        <input type="checkbox" asp-for="@Model.IsActive" id="IsActive" name="IsActive" value=true />
+                                        <label for="editIsActive" class="form-label">Is Active</label>
+                                        <input type="checkbox" id="editIsActive" name="IsActive" value="true" />
                                     </div>
+
                                     <button type="submit" class="btn btn-success">Save Changes</button>
                                 </form>
                             </div>
@@ -186,13 +185,20 @@
                                 <td>@(category.IsActive ? "Yes" : "No")</td>
                                 <td>
                                     <!-- Check if the category has related news articles -->
-                                    @if (!newsArticles.Any(a => a.CategoryId == category.CategoryId))
+                                    @{
+                                        // Check if this category or any of its subcategories have related news
+                                        bool hasRelatedNews = newsArticles.Any(a => a.CategoryId == category.CategoryId)
+                                        || list.Any(sub => sub.ParentCategoryId == category.CategoryId && newsArticles.Any(a => a.CategoryId == sub.CategoryId));
+                                    }
+
+                                    @if (!hasRelatedNews)
                                     {
-                                        <!-- Show Update and Delete buttons if no news articles exist for this category -->
+                                        <!-- Show Update and Delete buttons if no news articles exist for this category or its children -->
                                         <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCategoryModal"
                                                 data-id="@category.CategoryId"
                                                 data-name="@category.CategoryName"
                                                 data-description="@category.CategoryDescription"
+                                                data-parentid="@category.ParentCategoryId"
                                                 data-isactive="@category.IsActive">
                                             <i class="fa fa-edit"></i> Update
                                         </button>
@@ -202,6 +208,17 @@
                                                 <i class="fa fa-trash"></i> Delete
                                             </button>
                                         </form>
+                                    }
+                                    else
+                                    {
+                                        <!-- Disabled buttons with tooltip -->
+                                        <button type="button" class="btn btn-warning btn-sm disabled" title="Category used">
+                                            <i class="fa fa-edit"></i> Update
+                                        </button>
+
+                                        <button type="button" class="btn btn-danger btn-sm disabled" title="Category used">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
                                     }
                                 </td>
                             </tr>
@@ -262,16 +279,18 @@
                                                         <td>
                                                             <!-- Check if subcategory has related news articles -->
                                                             @if (!newsArticles.Any(a => a.CategoryId == subCategory.CategoryId))
-                                                            {
-                                                                <!-- Show Update and Delete buttons if no news articles exist for this subcategory -->
-                                                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCategoryModal"
-                                                                        data-id="@subCategory.CategoryId"
-                                                                        data-name="@subCategory.CategoryName"
-                                                                        data-description="@subCategory.CategoryDescription"
-                                                                        data-parentid="@subCategory.ParentCategoryId"
-                                                                        data-isactive="@subCategory.IsActive">
-                                                                    <i class="fa fa-edit"></i> Update
-                                                                </button>
+                                                            { <!-- Show Update and Delete buttons if no news articles exist for this subcategory -->
+                                                                <form asp-controller="Category" asp-action="ShowEditCategoryForm" asp-route-id="@subCategory.CategoryId" >
+                                                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCategoryModal"
+                                                                            data-id="@subCategory.CategoryId"
+                                                                            data-name="@subCategory.CategoryName"
+                                                                            data-description="@subCategory.CategoryDescription"
+                                                                            data-parentid="@subCategory.ParentCategoryId"
+                                                                            data-isactive="@subCategory.IsActive">
+                                                                        <i class="fa fa-edit"></i> Update
+                                                                    </button>
+
+                                                                </form>
 
                                                                 <form asp-controller="Category" asp-action="DeleteCategory" asp-route-id="@subCategory.CategoryId" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this category?');">
                                                                     <button type="submit" class="btn btn-danger btn-sm">

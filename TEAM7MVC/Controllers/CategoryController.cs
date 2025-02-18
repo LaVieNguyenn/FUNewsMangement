@@ -94,18 +94,16 @@ namespace Team7MVC.Controllers
                 return NotFound();
             }
 
-            // Map Category to CategoryViewModel
-            var categoryViewModel = new CategoryViewModel
+            return Json(new
             {
                 CategoryId = category.CategoryId,
                 CategoryName = category.CategoryName,
                 CategoryDescription = category.CategoryDescription,
                 ParentCategoryId = category.ParentCategoryId,
                 IsActive = category.IsActive
-            };
-
-            return RedirectToAction("Index");
+            });
         }
+
 
 
         // POST: Save Changes to Category
