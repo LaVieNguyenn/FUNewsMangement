@@ -1,8 +1,10 @@
+using Team7MVC.BLL.Services.CategoryService;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Transactions;
 using Team7MVC.BLL.Services.NewsArticleService;
 using Team7MVC.BLL.Services.SystemAccountService;
 using Team7MVC.DAL.DAOs;
+using Team7MVC.DAL.DAOs.CategoryDAO;
 using Team7MVC.DAL.DAOs.NewArticleDAO;
 using Team7MVC.DAL.DAOs.SystemAccountDAO;
 using Team7MVC.DAL.Repositories;
@@ -27,13 +29,15 @@ namespace Team7MVC
             //New Article
             builder.Services.AddSingleton<INewArticleDAO, NewArticleDAO>();
             builder.Services.AddSingleton<INewsArticleRepository, NewsArticleRepository>();
+            builder.Services.AddSingleton<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddSingleton<ICatogeryDAO, CategoryDAO>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<INewArticleService, NewArticleService>();
 
             //AccountService
             builder.Services.AddSingleton<ISystemAccountDAO, SystemAccountDAO>();
             builder.Services.AddSingleton<ISystemAccountRepository, SystemAccountRepository>();
             builder.Services.AddScoped<ISystemAccountService, SystemAccountService>();
-
             var app = builder.Build();
 
 
