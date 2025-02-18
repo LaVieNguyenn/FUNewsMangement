@@ -36,7 +36,7 @@ namespace Team7MVC
             // Report Service
 
             builder.Services.AddScoped<IReportRepository, ReportRepository>();
-            builder.Services.AddScoped<IReportService, ReportService>();    
+            builder.Services.AddScoped<IReportService, ReportService>();
            
             //AccountService
             builder.Services.AddSingleton<ISystemAccountDAO, SystemAccountDAO>();
