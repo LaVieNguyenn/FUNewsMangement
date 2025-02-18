@@ -22,7 +22,6 @@ namespace Team7MVC.Controllers
             _newsArticle = newArticleService;
         }
 
-
         // hien thi tt ca nhan
         public async Task<IActionResult> Index()
         {
@@ -88,7 +87,7 @@ namespace Team7MVC.Controllers
             if (account == null)
                 return NotFound();
 
-            var newsArticles = await _newsArticle.GetNewsHistoryByStaffIdAsync(account.AccountId);
+            var newsArticles = await _newsArticle.GetNewsHistoryByCreatedByIdAsync(account.AccountId);
 
             var newsHistoryViewModel = newsArticles.Select(article => new NewArticleViewModel
             {
@@ -101,6 +100,7 @@ namespace Team7MVC.Controllers
                 Category = article.CategoryId.ToString(),
                 CreatedBy = account.AccountName
             }).ToList();
+
             return View(newsHistoryViewModel);
         }
     }

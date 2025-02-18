@@ -30,9 +30,9 @@ namespace Team7MVC.BLL.Services.NewsArticleService
         {
             return _repository.GetAllNewsArticlesAsync();
         }
-        public async Task<IEnumerable<NewsArticle>> GetNewsHistoryByStaffIdAsync(int staffId)
+        public async Task<IEnumerable<NewsArticle>> GetNewsHistoryByCreatedByIdAsync(int createdById)
         {
-            return await _repository.GetNewsHistoryByStaffIdAsync(staffId);
+            return await _repository.GetNewsHistoryByCreatedByIdAsync(createdById);
         }
     }
 }
