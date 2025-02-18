@@ -22,7 +22,7 @@ namespace Team7MVC
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "Authentication/Login";
+                    options.LoginPath = "/Authentication/Login";
                     options.AccessDeniedPath = "/";
                 });
             builder.Services.AddHttpContextAccessor();

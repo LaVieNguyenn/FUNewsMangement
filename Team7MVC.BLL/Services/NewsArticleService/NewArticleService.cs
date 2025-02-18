@@ -20,9 +20,14 @@ namespace Team7MVC.BLL.Services.NewsArticleService
             return _repository.GetAllNewestAriticlesAsync().Result.Take(5);
         }
 
+        public Task<IEnumerable<NewsArticle>> GetAllNewestNewsByCategoryNameAsync(string categoryName, int max)
+        {
+            return _repository.GetAllNewestAriticlesAsyncByAsync(categoryName, max);
+        }
+
         public Task<IEnumerable<NewsArticle>> GetNewsArticlesAsync()
         {
-            throw new NotImplementedException();
+            return _repository.GetAllNewsArticlesAsync();
         }
     }
 }

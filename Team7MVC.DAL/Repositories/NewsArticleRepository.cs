@@ -21,6 +21,11 @@ namespace Team7MVC.DAL.Repositories
             return _newArticleDAO.GetAllAsync();    
         }
 
+        public Task<IEnumerable<NewsArticle>> GetAllNewestAriticlesAsyncByAsync(string categoryName, int max)
+        {
+            return _newArticleDAO.GetAllNewstNewByCategory(categoryName, max);
+        }
+
         public Task<IEnumerable<NewsArticle>> GetAllNewsArticlesAsync()
         {
             return _newArticleDAO.GetAllNewestNews();

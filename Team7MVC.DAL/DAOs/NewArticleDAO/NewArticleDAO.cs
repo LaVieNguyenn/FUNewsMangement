@@ -39,6 +39,16 @@ namespace Team7MVC.DAL.DAOs.NewArticleDAO
             }
         }
 
+        public async Task<IEnumerable<NewsArticle>> GetAllNewstNewByCategory(string CategoryName, int max)
+        {
+            using(var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var sql = "SELECT TOP(@Max) na.* FROM NewsArticle na JOIN Category c ON na.CategoryID = c.CategoryID WHERE c.CategoryName=@CategoryName ORDER BY na.CreatedDate DESC";
+                return await connection.QueryAsync<NewsArticle>(sql, new { Max = max, CategoryName = CategoryName });
+            }
+        }
+
         public async Task<NewsArticle> GetByIdAsync(int id)
         {
             using (var connection = new SqlConnection(_connectionString))

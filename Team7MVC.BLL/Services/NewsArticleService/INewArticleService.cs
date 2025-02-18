@@ -11,5 +11,6 @@ namespace Team7MVC.BLL.Services.NewsArticleService
     {
         public Task<IEnumerable<NewsArticle>> GetNewsArticlesAsync();
         public Task<IEnumerable<NewsArticle>> GetAllNewestNewsAsync();
+        public Task<IEnumerable<NewsArticle>> GetAllNewestNewsByCategoryNameAsync(string categoryName, int max);
     }
 }
