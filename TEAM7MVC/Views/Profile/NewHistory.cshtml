@@ -1,0 +1,39 @@
+﻿@model List<Team7MVC.Models.NewArticleViewModel>
+@{
+    ViewData["Title"] = "My News History";
+}
+
+<h2>My News History</h2>
+
+@if (!Model.Any())
+{
+    <p>No news articles found.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Headline</th>
+                <th>Created Date</th>
+                <th>News Source</th>
+                <th>Category</th>
+                <th>Created By</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var article in Model)
+            {
+                <tr>
+                    <td>@article.NewsTitle</td>
+                    <td>@article.Headline</td>
+                    <td>@article.CreatedDate.ToString("yyyy-MM-dd")</td>
+                    <td>@article.NewsSource</td>
+                    <td>@article.Category</td>
+                    <td>@article.CreatedBy</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

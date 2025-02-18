@@ -1,7 +1,7 @@
 ﻿@using Team7MVC.BLL.Services.NewsArticleService
 @inject INewArticleService _service
 @{
-    var list = _service.GetAllNewestNewsAsync().Result.Select(news => new NewArticleViewModel
+    var list = _service.GetAllNewestNewsAsync().Result.Select(news => new NewHistoryViewModel
             {
                 NewsArticleId = news.NewsArticleId,
                 Category = news.CategoryName,

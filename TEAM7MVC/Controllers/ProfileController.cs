@@ -90,7 +90,7 @@ namespace Team7MVC.Controllers
 
             var newsArticles = await _newsArticle.GetNewsHistoryByStaffIdAsync(account.AccountId);
 
-            var newsHistoryViewModel = newsArticles.Select(article => new NewArticleViewModel
+            var newsHistoryViewModel = newsArticles.Select(article => new NewHistoryViewModel
             {
                 NewsArticleId = article.NewsArticleId,
                 NewsTitle = article.NewsTitle,
