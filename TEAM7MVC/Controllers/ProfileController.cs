@@ -4,27 +4,37 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Team7MVC.BLL.Services.SystemAccountService;
+using Team7MVC.Models;
 
 namespace Team7MVC.Controllers
 {
     [Authorize(Roles = "Staff")]
     public class ProfileController : Controller
     {
-        private readonly ISystemAccountRepository _accountRepository;
+        private readonly ISystemAccountService _services;
 
-        public ProfileController(ISystemAccountRepository accountRepository)
+        public ProfileController(ISystemAccountService systemAccountService)
         {
-            _accountRepository = accountRepository;
+            _services = systemAccountService;
         }
 
         // hien thi tt ca nhan
         public async Task<IActionResult> Index()
         {
             string email = User.FindFirstValue(ClaimTypes.Email);
-            var account = await _accountRepository.GetAccountByEmailAsync(email);
+            var account = await _services.GetAccountByEmailAsync(email);
 
             if (account == null)
+            {
                 return NotFound();
+            }
+
+            var profileViewModel = new ProfileViewModel
+            {
+                ProfileId = account.AccountId,
+                ProfileName = account.AccountName
+            };
 
             return View(account);
         }
@@ -33,28 +43,35 @@ namespace Team7MVC.Controllers
         public async Task<IActionResult> Edit()
         {
             string email = User.FindFirstValue(ClaimTypes.Email);
-            var account = await _accountRepository.GetAccountByEmailAsync(email);
+            var account = await _services.GetAccountByEmailAsync(email);
 
             if (account == null)
                 return NotFound();
 
-            return View(account);
+            // Map SystemAccount to ProfileViewModel
+            var profileViewModel = new ProfileViewModel
+            {
+                ProfileId = account.AccountId,
+                ProfileName = account.AccountName
+            };
+
+            return View(profileViewModel);
         }
 
         // xu ly cap nhat tt
         [HttpPost]
-        public async Task<IActionResult> Edit(SystemAccount account)
+        public async Task<IActionResult> Edit(ProfileViewModel profileViewModel)
         {
             if (!ModelState.IsValid)
-                return View(account);
+                return View(profileViewModel);
 
-            var existingAccount = await _accountRepository.GetAccountByEmailAsync(account.AccountEmail);
+            var existingAccount = await _services.GetAccountByEmailAsync(profileViewModel.ProfileName);
             if (existingAccount == null)
                 return NotFound();
 
-            // cap nhat tt
-            existingAccount.AccountName = account.AccountName;
-            await _accountRepository.UpdateAccountAsync(existingAccount);
+            existingAccount.AccountName = profileViewModel.ProfileName;
+
+            await _services.UpdateProfileAsync(existingAccount);
 
             TempData["SuccessMessage"] = "Profile updated successfully!";
             return RedirectToAction("Index");

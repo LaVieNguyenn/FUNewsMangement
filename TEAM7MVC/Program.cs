@@ -25,6 +25,10 @@ namespace Team7MVC
                     options.LoginPath = "/Authentication/Login";
                     options.AccessDeniedPath = "/";
                 });
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("StaffOnly", policy => policy.RequireRole("Staff"));
+            });
             builder.Services.AddHttpContextAccessor();
             //New Article
             builder.Services.AddSingleton<INewArticleDAO, NewArticleDAO>();
