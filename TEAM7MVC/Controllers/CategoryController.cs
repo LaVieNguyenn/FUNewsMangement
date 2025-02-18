@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Team7MVC.BLL.Services.CategoryService;
+using Team7MVC.BLL.Services.NewsArticleService;
 using Team7MVC.DAL.Models;
 using Team7MVC.Models;
 
@@ -8,9 +9,11 @@ namespace Team7MVC.Controllers
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
-        public CategoryController(ICategoryService categoryService)
+        private readonly INewArticleService _newsArticleService;
+        public CategoryController(ICategoryService categoryService, INewArticleService newsArticleService)
         {
             _categoryService = categoryService;
+            _newsArticleService = newsArticleService;
         }
         [HttpPost]
        
@@ -81,41 +84,76 @@ namespace Team7MVC.Controllers
 
             return RedirectToAction("Index");
         }
+        // GET: Show the Edit Category Form
+        [HttpGet]
+        public async Task<IActionResult> ShowEditCategoryForm(int id)
+        {
+            var category = await _categoryService.GetCategoryByIdAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
 
-        //[HttpPost]
-        //public async Task<IActionResult> EditCategory(int id, CategoryViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            var category = await _categoryService.GetCategoryByIdAsync(id);
+            // Map Category to CategoryViewModel
+            var categoryViewModel = new CategoryViewModel
+            {
+                CategoryId = category.CategoryId,
+                CategoryName = category.CategoryName,
+                CategoryDescription = category.CategoryDescription,
+                ParentCategoryId = category.ParentCategoryId,
+                IsActive = category.IsActive
+            };
 
-        //            if (category == null)
-        //            {
-        //                TempData["ErrorMessage"] = "Category not found!";
-        //                return RedirectToAction("Index");
-        //            }
+            return RedirectToAction("Index");
+        }
 
-        //            // Update category
-        //            category.CategoryName = model.CategoryName;
-        //            category.CategoryDescription = model.CategoryDescription;
-        //            category.ParentCategoryId = model.ParentCategoryId;
-        //            category.IsActive = model.IsActive;
 
-        //            await _categoryService.UpdateCategoryAsync(category);
+        // POST: Save Changes to Category
+        [HttpPost]
+        public async Task<IActionResult> SaveEditedCategory(CategoryViewModel category)
+        {
+            Console.WriteLine("Submitted Model:");
+            Console.WriteLine($" Category Id: {category.CategoryId}");
+            Console.WriteLine($"Category Name: {category.CategoryName}");
+            Console.WriteLine($"Category Description: {category.CategoryDescription}");
+            Console.WriteLine($"Parent Category Id: {category.ParentCategoryId}");
+            Console.WriteLine($"Is Active: {category.IsActive}");
+            if (!ModelState.IsValid)
+            {
+                Console.WriteLine("ModelState is invalid:");
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine($"Validation Error: {error.ErrorMessage}");
+                }
+            }
+            if (ModelState.IsValid)
+            {
 
-        //            TempData["SuccessMessage"] = "Category updated successfully!";
-        //            return RedirectToAction("Index");
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            TempData["ErrorMessage"] = ex.Message;
-        //        }
+                var categoryEntity = await _categoryService.UpdateCategoryAsync(new Category
+                {
+                    CategoryId = category.CategoryId,
+                    CategoryName = category.CategoryName,
+                    CategoryDescription = category.CategoryDescription,
+                    ParentCategoryId = category.ParentCategoryId,
+                    IsActive = category.IsActive,
+                });
+                // Map to entity if necessary
+               
+
                 
-        //    }
-        //    return RedirectToAction("Index");
-        //}
+                    if (categoryEntity)
+                {
+                    TempData["SuccessMessage"] = "Category updated successfully!";
+                    return RedirectToAction("Index"); // Redirect after success
+                }
+            }
+
+            TempData["ErrorMessage"] = "Error updating category!";
+            return RedirectToAction("Index"); // Return to index or modal if validation fails
+        }
+
+
+
         public IActionResult Index()
         {
             return View();

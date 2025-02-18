@@ -15,6 +15,7 @@ namespace Team7MVC.DAL.DAOs.CategoryDAO
 
         Task<int> CreateCategoryAsync(Category category);
         Task DeleteCategoryAsync(int id);
+        Task<bool> UpdateCategoryAsync(Category category);
     }
 
 }

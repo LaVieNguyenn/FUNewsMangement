@@ -86,6 +86,25 @@ namespace Team7MVC.DAL.DAOs.CategoryDAO
             }
         }
 
+        public async Task<bool> UpdateCategoryAsync(Category category)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var sql = @"
+            UPDATE Category
+            SET CategoryName = @CategoryName,
+                CategoryDescription = @CategoryDescription,
+                ParentCategoryId = @ParentCategoryId,
+                IsActive = @IsActive
+            WHERE CategoryId = @CategoryId";
+
+                var result = await connection.ExecuteAsync(sql, category);
+                return result > 0; // Return true if the update was successful
+            }
+        }
+
+
 
     }
 }

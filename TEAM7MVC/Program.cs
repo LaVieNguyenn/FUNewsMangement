@@ -1,4 +1,5 @@
 using Team7MVC.BLL.Services.CategoryService;
+using Team7MVC.BLL.Services.NewsArticleService;
 using Team7MVC.DAL.DAOs;
 using Team7MVC.DAL.DAOs.CategoryDAO;
 using Team7MVC.DAL.DAOs.NewArticleDAO;
@@ -17,6 +18,7 @@ namespace Team7MVC
             //New Article
             builder.Services.AddSingleton<INewArticleDAO, NewArticleDAO>();
             builder.Services.AddSingleton<INewsArticleRepository, NewsArticleRepository>();
+            builder.Services.AddScoped<INewArticleService, NewArticleService>();
             builder.Services.AddSingleton<ICategoryRepository, CategoryRepository>();
             builder.Services.AddSingleton<ICatogeryDAO, CategoryDAO>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();

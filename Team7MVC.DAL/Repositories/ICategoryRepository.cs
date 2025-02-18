@@ -15,5 +15,6 @@ namespace Team7MVC.DAL.Repositories
 
         Task<int> CreateCategoryAsync(Category category);
         Task DeleteCategoryAsync(int categoryId);
+        Task<bool> UpdateCategoryAsync(Category category); // Update an existing category
     }
 }

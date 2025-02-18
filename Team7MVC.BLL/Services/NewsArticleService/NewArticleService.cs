@@ -24,5 +24,9 @@ namespace Team7MVC.BLL.Services.NewsArticleService
         {
             throw new NotImplementedException();
         }
+        public Task<IEnumerable<NewsArticle>> GetAllNewsArticlesAsync()
+        {
+            return _repository.GetAllNewsArticlesAsync();
+        }
     }
 }

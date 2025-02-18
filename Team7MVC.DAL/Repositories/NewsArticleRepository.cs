@@ -18,12 +18,12 @@ namespace Team7MVC.DAL.Repositories
 
         public Task<IEnumerable<NewsArticle>> GetAllNewestAriticlesAsync()
         {
-            return _newArticleDAO.GetAllAsync();    
+            return _newArticleDAO.GetAllNewestNews();    
         }
 
         public Task<IEnumerable<NewsArticle>> GetAllNewsArticlesAsync()
         {
-            return _newArticleDAO.GetAllNewestNews();
+            return _newArticleDAO.GetAllAsync();
         }
 
         public Task<NewsArticle> GetNewsArticleByIdAsync(int id)
