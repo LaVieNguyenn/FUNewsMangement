@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Team7MVC.DAL.DTOs;
 using Team7MVC.DAL.Models;
 
 namespace Team7MVC.DAL.DAOs.NewArticleDAO
@@ -19,13 +20,13 @@ namespace Team7MVC.DAL.DAOs.NewArticleDAO
             _connectionString = configuration.GetConnectionString("DefaultConnectionStringDB")!;
         }
 
-        public async Task<IEnumerable<NewsArticle>> GetAllAsync()
+        public async Task<IEnumerable<NewsArticleDTO>> GetAllAsync()
         {
             using(var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var sql = "SELECT * FROM NewsArticle ORDER BY CreatedDate DESC";
-                return await connection.QueryAsync<NewsArticle>(sql);
+                var sql = "SELECT na.NewsArticleID, na.NewsTitle, na.Headline, na.CreatedDate, na.NewsContent, na.NewsSource, c.CategoryName, sa.AccountName FROM NewsArticle na JOIN Category c ON na.CategoryID = c.CategoryID JOIN SystemAccount sa ON na.CreatedByID = sa.AccountID ORDER BY na.CreatedDate DESC";
+                return await connection.QueryAsync<NewsArticleDTO>(sql);
             }
         }
 
@@ -34,18 +35,18 @@ namespace Team7MVC.DAL.DAOs.NewArticleDAO
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var sql = "SSELECT * FROM NewsArticle WHERE CONVERT(Date,CreatedDate) = Convert(DATE, GETDATE()) ORDER BY CreatedDate DESC;";
+                var sql = "SELECT * FROM NewsArticle WHERE CONVERT(Date,CreatedDate) = Convert(DATE, GETDATE()) ORDER BY CreatedDate DESC;";
                 return await connection.QueryAsync<NewsArticle>(sql);
             }
         }
 
-        public async Task<IEnumerable<NewsArticle>> GetAllNewstNewByCategory(string CategoryName, int max)
+        public async Task<IEnumerable<NewsArticleDTO>> GetAllNewstNewByCategory(string CategoryName, int max)
         {
             using(var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var sql = "SELECT TOP(@Max) na.* FROM NewsArticle na JOIN Category c ON na.CategoryID = c.CategoryID WHERE c.CategoryName=@CategoryName ORDER BY na.CreatedDate DESC";
-                return await connection.QueryAsync<NewsArticle>(sql, new { Max = max, CategoryName = CategoryName });
+                var sql = "SELECT TOP(@Max) na.NewsArticleID, na.NewsTitle, na.Headline, na.CreatedDate, na.NewsContent, na.NewsSource, c.CategoryName, sa.AccountName FROM NewsArticle na JOIN Category c ON na.CategoryID = c.CategoryID JOIN SystemAccount sa ON na.CreatedByID = sa.AccountID WHERE c.CategoryName=@CategoryName ORDER BY na.CreatedDate DESC";
+                return await connection.QueryAsync<NewsArticleDTO>(sql, new { Max = max, CategoryName = CategoryName });
             }
         }
 

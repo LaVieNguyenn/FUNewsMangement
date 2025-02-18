@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Team7MVC.DAL.DAOs.NewArticleDAO;
+using Team7MVC.DAL.DTOs;
 using Team7MVC.DAL.Models;
 
 namespace Team7MVC.DAL.Repositories
@@ -16,12 +17,12 @@ namespace Team7MVC.DAL.Repositories
             _newArticleDAO = newArticleDAO;            
         }
 
-        public Task<IEnumerable<NewsArticle>> GetAllNewestAriticlesAsync()
+        public Task<IEnumerable<NewsArticleDTO>> GetAllNewestAriticlesAsync()
         {
             return _newArticleDAO.GetAllAsync();    
         }
 
-        public Task<IEnumerable<NewsArticle>> GetAllNewestAriticlesAsyncByAsync(string categoryName, int max)
+        public Task<IEnumerable<NewsArticleDTO>> GetAllNewestAriticlesAsyncByAsync(string categoryName, int max)
         {
             return _newArticleDAO.GetAllNewstNewByCategory(categoryName, max);
         }
