@@ -4,13 +4,13 @@
     var list = _service.GetAllNewestNewsAsync().Result.Select(news => new NewArticleViewModel
             {
                 NewsArticleId = news.NewsArticleId,
-                Category = news.CategoryId.ToString(),
+                Category = news.CategoryName,
                 Headline = news.Headline,
                 NewsContent = news.NewsContent,
                 NewsSource = news.NewsSource,
                 NewsTitle = news.NewsTitle,
                 CreatedDate = news.CreatedDate,
-                CreatedBy = "DEMO AUTHOR"
+                CreatedBy = news.AccountName
             }
     ).ToList();
 }
