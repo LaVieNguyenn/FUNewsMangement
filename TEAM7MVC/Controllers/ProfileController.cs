@@ -14,12 +14,10 @@ namespace Team7MVC.Controllers
     public class ProfileController : Controller
     {
         private readonly ISystemAccountService _services;
-        private readonly INewArticleService _newsArticle;
 
-        public ProfileController(ISystemAccountService systemAccountService, INewArticleService newArticleService)
+        public ProfileController(ISystemAccountService systemAccountService)
         {
             _services = systemAccountService;
-            _newsArticle = newArticleService;
         }
 
         // hien thi tt ca nhan
@@ -83,25 +81,22 @@ namespace Team7MVC.Controllers
         public async Task<IActionResult> NewsHistory()
         {
             string email = User.FindFirstValue(ClaimTypes.Email);
-            var account = await _services.GetAccountByEmailAsync(email);
+            var account = await _services.GetAccountWithNewsHistoryAsync(email);
 
             if (account == null)
                 return NotFound();
 
-            var newsArticles = await _newsArticle.GetNewsHistoryByCreatedByIdAsync(account.AccountId);
-
-            var newsHistoryViewModel = newsArticles.Select(article => new NewArticleViewModel
+            var profileViewModel = new ProfileViewModel
             {
-                NewsArticleId = article.NewsArticleId,
-                NewsTitle = article.NewsTitle,
-                Headline = article.Headline,
-                CreatedDate = article.CreatedDate,
-                NewsSource = article.NewsSource,
-                Category = article.CategoryId.ToString(),
-                CreatedBy = account.AccountName
-            }).ToList();
+                AccountId = account.AccountId,
+                AccountName = account.AccountName,
+                AccountEmail = account.AccountEmail,
+                AccountRole = account.AccountRole,
+                NewsArticleCreatedBies = account.NewsArticleCreatedBies,
+                NewsArticleUpdatedBies = account.NewsArticleUpdatedBies
+            };
 
-            return View(newsHistoryViewModel);
+            return View(profileViewModel);
         }
     }
 }

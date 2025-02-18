@@ -28,6 +28,11 @@ namespace Team7MVC.BLL.Services.SystemAccountService
         {
             return _repository.UpdateAccountAsync(account);
         }
+
+        public Task<SystemAccount> GetAccountWithNewsHistoryAsync(string email)
+        {
+               return _repository.GetAccountWithNewsHistoryAsync(email);
+        }
     }
 }
         

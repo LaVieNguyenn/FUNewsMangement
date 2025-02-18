@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,6 +31,11 @@ namespace Team7MVC.DAL.Repositories
         public async Task UpdateAccountAsync(SystemAccount account)
         {
             await _systemAccountDAO.UpdateAccountAsync(account);
+        }
+
+        public async Task<SystemAccount?> GetAccountWithNewsHistoryAsync(string email)
+        {
+            return await _systemAccountDAO.GetAccountWithNewsHistoryAsync(email);
         }
     }
 }

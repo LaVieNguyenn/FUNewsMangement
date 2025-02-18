@@ -15,7 +15,7 @@
         public string? NewsSource { get; set; }
          
         public string Category { get; set; }
-        public int CreatedById { get; set; }
+
         public string CreatedBy { get; set; }
     }
 }

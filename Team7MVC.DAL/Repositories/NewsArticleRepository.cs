@@ -36,9 +36,5 @@ namespace Team7MVC.DAL.Repositories
         {
             return _newArticleDAO.GetByIdAsync(id);
         }
-        public Task<IEnumerable<NewsArticle>> GetNewsHistoryByCreatedByIdAsync(int createdById)
-        {
-            return _newArticleDAO.GetNewsHistoryByCreatedByIdAsync(createdById);
-        }
     }
 }

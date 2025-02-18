@@ -50,5 +50,44 @@ namespace Team7MVC.DAL.DAOs.SystemAccountDAO
                 await connection.ExecuteAsync(sql, new { account.AccountName, account.AccountEmail });
             }
         }
+        public async Task<SystemAccount?> GetAccountWithNewsHistoryAsync(string email)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                var sql = @"SELECT a.*, n.NewsArticleID, n.NewsTitle, n.Headline, n.CreatedDate, 
+                                   n.NewsContent, n.NewsSource, n.CategoryID, n.NewsStatus 
+                            FROM SystemAccount a
+                            LEFT JOIN NewsArticle n ON a.AccountID = n.CreatedByID
+                            WHERE a.AccountEmail = @Email";
+
+                var accountDictionary = new Dictionary<int, SystemAccount>();
+
+                var result = await connection.QueryAsync<SystemAccount, NewsArticle, SystemAccount>(
+                    sql,
+                    (account, newsArticle) =>
+                    {
+                        if (!accountDictionary.TryGetValue(account.AccountId, out var existingAccount))
+                        {
+                            existingAccount = account;
+                            existingAccount.NewsArticleCreatedBies = new List<NewsArticle>();
+                            accountDictionary.Add(existingAccount.AccountId, existingAccount);
+                        }
+
+                        if (newsArticle != null)
+                        {
+                            existingAccount.NewsArticleCreatedBies.Add(newsArticle);
+                        }
+
+                        return existingAccount;
+                    },
+                    new { Email = email },
+                    splitOn: "NewsArticleID"
+                );
+
+                return result.FirstOrDefault();
+            }
+        }
     }
 }

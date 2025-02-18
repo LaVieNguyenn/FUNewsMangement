@@ -12,5 +12,6 @@ namespace Team7MVC.BLL.Services.SystemAccountService
         Task<SystemAccount> Login(string email, string password);
         Task<SystemAccount?> GetAccountByEmailAsync(string email); // lay tk theo email
         Task UpdateProfileAsync(SystemAccount account); // cap nhat ho so
+        Task<SystemAccount> GetAccountWithNewsHistoryAsync(string email);
     }
 }
