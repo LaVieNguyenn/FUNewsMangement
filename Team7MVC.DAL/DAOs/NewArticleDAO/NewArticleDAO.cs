@@ -59,6 +59,17 @@ namespace Team7MVC.DAL.DAOs.NewArticleDAO
                 return await connection.QueryFirstOrDefaultAsync<NewsArticle>(sql, new { Id = id });
             }
         }
+        public async Task<IEnumerable<NewsArticle>> GetNewsHistoryByStaffIdAsync(int staffId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var sql = @"SELECT * FROM NewsArticle 
+                            WHERE CreatedByID = @StaffId AND NewsStatus = 'Active' 
+                            ORDER BY CreatedDate DESC";
+                return await connection.QueryAsync<NewsArticle>(sql, new { StaffId = staffId });
+            }
+        }
 
     }
 }
