@@ -10,5 +10,7 @@ namespace Team7MVC.DAL.DAOs.SystemAccountDAO
     public interface ISystemAccountDAO
     {
         Task<SystemAccount> Login(string email, string password);
+        Task<SystemAccount?> GetAccountByEmailAsync(string email); // lay tk theo email
+        Task UpdateAccountAsync(SystemAccount account); // cap nhat tk
     }
 }

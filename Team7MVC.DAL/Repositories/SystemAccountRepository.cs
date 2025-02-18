@@ -17,7 +17,19 @@ namespace Team7MVC.DAL.Repositories
         }
         public async Task<SystemAccount> Login(string email, string password)
         {
-            return  await _systemAccountDAO.Login(email, password);   
+            return await _systemAccountDAO.Login(email, password);
+        }
+
+        // lay tk theo email
+        public async Task<SystemAccount?> GetAccountByEmailAsync(string email)
+        {
+            return await _systemAccountDAO.GetAccountByEmailAsync(email);
+        }
+
+        // cap nhat tk
+        public async Task UpdateAccountAsync(SystemAccount account)
+        {
+            await _systemAccountDAO.UpdateAccountAsync(account);
         }
     }
 }

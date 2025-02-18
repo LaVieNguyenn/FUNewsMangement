@@ -19,6 +19,15 @@ namespace Team7MVC.BLL.Services.SystemAccountService
         {
             return _repository.Login(email, password);  
         }
+        public Task<SystemAccount?> GetAccountByEmailAsync(string email) // lay tk theo email
+        {
+            return _repository.GetAccountByEmailAsync(email);
+        }
+
+        public Task UpdateProfileAsync(SystemAccount account) // cap nhat tk
+        {
+            return _repository.UpdateAccountAsync(account);
+        }
     }
 }
         
