@@ -1,0 +1,136 @@
+﻿@using Team7MVC.BLL.Services.CategoryService
+@inject ICategoryService _service
+@model CategoryViewModel
+@{
+    var list = await _service.GetAllAsync();
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="page-title">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                <h2><i class="fa fa-th"></i> Category Manager </h2>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                    <li class="breadcrumb-item active">Category Manager</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                <div class="page-wrapper">
+                    <h3>Category List</h3>
+
+                    <!-- Add New Category Button -->
+                    <button class="btn btn-primary mb-3" data-bs-toggle="collapse" data-bs-target="#addCategoryForm" aria-expanded="false" aria-controls="addCategoryForm">Add New Category</button>
+
+                    <!-- Add New Category Form (Hidden initially) -->
+                    <div id="addCategoryForm" class="collapse">
+                        <form  asp-controller="Category" asp-action="CreateCategory" class="mb-3">
+                            <div class="mb-3">
+                                <label for="CategoryName" class="form-label">Category Name</label>
+                                <input type="text" asp-for="@Model.CategoryName" class="form-control" id="CategoryName" name="CategoryName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="CategoryDescription" class="form-label">Category Description</label>
+                                <input type="text" asp-for="@Model.CategoryDescription" class="form-control" id="CategoryDescription" name="CategoryDescription">
+                            </div>
+                            <div class="mb-3">
+                                <label for="ParentCategoryId" class="form-label">Parent Category</label>
+                                <select class="form-control" id="ParentCategoryId" name="ParentCategoryId">
+                                    <option value="">None</option>
+                                    @foreach (var category in list.Where(c => c.ParentCategoryId == null))
+                                    {
+                                        <option value="@category.CategoryId">@category.CategoryName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="IsActive" class="form-label">Is Active</label>
+                                <input type="checkbox" id="IsActive" asp-for="@Model.IsActive"  name="IsActive" value=true>
+                                <span> Tick to activate the category</span>
+                            </div>
+                            <button type="submit" class="btn btn-success">Save Category</button>
+                        </form>
+                    </div>
+
+                    </div>
+
+                    <ul class="list-group">
+                        @foreach (var category in list)
+                        {
+                            if (category.ParentCategoryId == null) // Top-level categories
+                            {
+                                var collapseId = "collapse-" + category.CategoryId; // Unique ID for collapse
+
+                                <li class="list-group-item">
+                                    <button class="btn category-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false">
+                                        <strong>@category.CategoryName</strong>
+                                    </button>
+
+                                    @if (list.Any(c => c.ParentCategoryId == category.CategoryId)) // If it has subcategories
+                                    {
+                                        <ul id="@collapseId" class="list-group collapse ms-3">
+                                            @foreach (var subCategory in list.Where(c => c.ParentCategoryId == category.CategoryId))
+                                            {
+                                                <li class="list-group-item">@subCategory.CategoryName</li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                <div class="sidebar">
+                    <div class="widget">
+                        <h2 class="widget-title">Search</h2>
+                        <form class="form-inline search-form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search on the site">
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                        </form>
+                    </div>
+                    <div class="widget">
+                        <h2 class="widget-title">Popular Categories</h2>
+                        <div class="link-widget">
+                            <ul>
+                                @foreach (var category in list)
+                                {
+                                    <li><a href="#">@category.CategoryName</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .category-toggle {
+        color: inherit; /* Use parent text color */
+        text-decoration: none; /* Remove underline */
+    }
+
+        .category-toggle:hover {
+            color: inherit; /* Keep text color the same on hover */
+            text-decoration: underline; /* Add a subtle underline */
+            background-color: cornflowerblue; /* Prevent background color change */
+        }
+</style>

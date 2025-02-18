@@ -48,5 +48,6 @@ namespace Team7MVC.DAL.DAOs.NewArticleDAO
                 return await connection.QueryFirstOrDefaultAsync<NewsArticle>(sql, new { Id = id });
             }
         }
+
     }
 }
