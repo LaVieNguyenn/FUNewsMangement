@@ -14,5 +14,6 @@ namespace Team7MVC.DAL.Repositories
         Task<IEnumerable<Category>> GetAllCategoriesAsync();
 
         Task<int> CreateCategoryAsync(Category category);
+        Task DeleteCategoryAsync(int categoryId);
     }
 }

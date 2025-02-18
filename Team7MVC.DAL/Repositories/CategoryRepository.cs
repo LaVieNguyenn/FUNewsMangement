@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,6 +39,12 @@ namespace Team7MVC.DAL.Repositories
             // Call the DAO layer to insert the category and get the new CategoryID
             return await _CatogeryDAO.CreateCategoryAsync(category);
         }
+        public async Task DeleteCategoryAsync(int categoryId)
+        {
+            await _CatogeryDAO.DeleteCategoryAsync(categoryId);
+        }
+
+
     }
 
 }
