@@ -29,17 +29,17 @@ namespace Team7MVC.Controllers
             var account = await _services.GetAccountByEmailAsync(email);
 
             if (account == null)
-            {
                 return NotFound();
-            }
 
             var profileViewModel = new ProfileViewModel
             {
-                ProfileId = account.AccountId,
-                ProfileName = account.AccountName
+                AccountId = account.AccountId,
+                AccountName = account.AccountName,
+                AccountEmail = account.AccountEmail,
+                AccountRole = account.AccountRole
             };
 
-            return View(account);
+            return View(profileViewModel);
         }
 
         // hien thi form cap nhat tt
@@ -51,11 +51,12 @@ namespace Team7MVC.Controllers
             if (account == null)
                 return NotFound();
 
-            // Map SystemAccount to ProfileViewModel
             var profileViewModel = new ProfileViewModel
             {
-                ProfileId = account.AccountId,
-                ProfileName = account.AccountName
+                AccountId = account.AccountId,
+                AccountName = account.AccountName,
+                AccountEmail = account.AccountEmail,
+                AccountRole = account.AccountRole
             };
 
             return View(profileViewModel);
@@ -68,11 +69,11 @@ namespace Team7MVC.Controllers
             if (!ModelState.IsValid)
                 return View(profileViewModel);
 
-            var existingAccount = await _services.GetAccountByEmailAsync(profileViewModel.ProfileName);
+            var existingAccount = await _services.GetAccountByEmailAsync(profileViewModel.AccountEmail);
             if (existingAccount == null)
                 return NotFound();
 
-            existingAccount.AccountName = profileViewModel.ProfileName;
+            existingAccount.AccountName = profileViewModel.AccountName;
 
             await _services.UpdateProfileAsync(existingAccount);
 
@@ -95,7 +96,6 @@ namespace Team7MVC.Controllers
                 NewsTitle = article.NewsTitle,
                 Headline = article.Headline,
                 CreatedDate = article.CreatedDate,
-                NewsContent = article.NewsContent,
                 NewsSource = article.NewsSource,
                 Category = article.CategoryId.ToString(),
                 CreatedBy = account.AccountName

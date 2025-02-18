@@ -6,12 +6,13 @@
 <h2>Edit Profile</h2>
 
 <form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="ProfileId" />
+    <input type="hidden" asp-for="AccountId" />
+    <input type="hidden" asp-for="AccountEmail" />
 
     <div class="form-group">
-        <label asp-for="ProfileName"></label>
-        <input asp-for="ProfileName" class="form-control" required />
-        <span asp-validation-for="ProfileName" class="text-danger"></span>
+        <label asp-for="AccountName"></label>
+        <input asp-for="AccountName" class="form-control" required />
+        <span asp-validation-for="AccountName" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-success">Save</button>

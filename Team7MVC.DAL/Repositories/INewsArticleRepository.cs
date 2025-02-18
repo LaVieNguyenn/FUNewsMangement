@@ -16,7 +16,5 @@ namespace Team7MVC.DAL.Repositories
         Task<IEnumerable<NewsArticleDTO>> GetAllNewestAriticlesAsyncByAsync(string categoryName, int max);
         Task<IEnumerable<NewsArticle>> GetNewsHistoryByCreatedByIdAsync(int createdById);
 
-
-
     }
 }
