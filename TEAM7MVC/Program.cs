@@ -33,7 +33,11 @@ namespace Team7MVC
             builder.Services.AddSingleton<ICatogeryDAO, CategoryDAO>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<INewArticleService, NewArticleService>();
+            // Report Service
 
+            builder.Services.AddScoped<IReportRepository, ReportRepository>();
+            builder.Services.AddScoped<IReportService, ReportService>();    
+           
             //AccountService
             builder.Services.AddSingleton<ISystemAccountDAO, SystemAccountDAO>();
             builder.Services.AddSingleton<ISystemAccountRepository, SystemAccountRepository>();
