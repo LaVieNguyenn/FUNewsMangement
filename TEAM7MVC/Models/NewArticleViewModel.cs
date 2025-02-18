@@ -1,6 +1,6 @@
 ﻿namespace Team7MVC.Models
 {
-    public class NewArticleViewModel
+    public class NewHistoryViewModel
     {
         public int NewsArticleId { get; set; }
 
