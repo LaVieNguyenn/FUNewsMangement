@@ -15,9 +15,9 @@ namespace Team7MVC.BLL.Services.NewsArticleService
         {
             _repository = repository;
         }
-        public Task<IEnumerable<NewsArticle>> GetAllNewestNewsAsync()
+        public async Task<IEnumerable<NewsArticle>> GetAllNewestNewsAsync()
         {
-            return _repository.GetAllNewestAriticlesAsync();    
+            return _repository.GetAllNewestAriticlesAsync().Result.Take(5);
         }
 
         public Task<IEnumerable<NewsArticle>> GetNewsArticlesAsync()

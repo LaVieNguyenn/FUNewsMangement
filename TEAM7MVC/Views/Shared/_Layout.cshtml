@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor _httpContextAccessor
+@{
+    var isLogin = _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <!-- Basic -->
@@ -90,6 +96,12 @@
                     <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                         <div class="topsearch text-right">
                             <a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-search"></i> Search</a>
+                           @if(!isLogin){
+                            <a asp-controller="Authentication" asp-action="Login" style="padding-left: 2rem;" title="logins icons"><img src="~/images/loginLogo.png" style="height: auto;width: 7%;" /></a>
+                           }else
+                           {
+                                <a asp-controller="Authentication" asp-action="Login" style="padding-left: 2rem;" title="logins icons">Hi, @_httpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value</a>
+                            }
                         </div><!-- end search -->
                     </div><!-- end col -->
                 </div><!-- end row -->

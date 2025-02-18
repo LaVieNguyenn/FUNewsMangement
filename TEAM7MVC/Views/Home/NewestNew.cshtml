@@ -1,0 +1,93 @@
+﻿@using Team7MVC.BLL.Services.NewsArticleService
+@inject INewArticleService _service
+@{
+    var list = _service.GetAllNewestNewsAsync().Result.Select(news => new NewArticleViewModel
+            {
+                NewsArticleId = news.NewsArticleId,
+                Category = news.CategoryId.ToString(),
+                Headline = news.Headline,
+                NewsContent = news.NewsContent,
+                NewsSource = news.NewsSource,
+                NewsTitle = news.NewsTitle,
+                CreatedDate = news.CreatedDate,
+                CreatedBy = "DEMO AUTHOR"
+            }
+    ).ToList();
+}
+<section class="section first-section">
+    <div class="container-fluid">
+        <div class="masonry-blog clearfix">
+            <div class="left-side">
+                <div class="masonry-box post-media">
+                    <img src="upload/blog_masonry_01.jpg" alt="" class="img-fluid">
+                    <div class="shadoweffect">
+                        <div class="shadow-desc">
+                            <div class="blog-meta">
+                                <span class="bg-aqua"><a href="blog-category-01.html" title="">@list.ElementAt(0).Category</a></span>
+                                <h4><a href="single.html" title="">@list.ElementAt(0).NewsTitle</a></h4>
+                                <small><a href="single.html" title="">@list.ElementAt(0).CreatedDate</a></small>
+                                <small><a href="blog-author.html" title="">@list.ElementAt(0).CreatedBy</a></small>
+                            </div><!-- end meta -->
+                        </div><!-- end shadow-desc -->
+                    </div><!-- end shadow -->
+                </div><!-- end post-media -->
+            </div><!-- end left-side -->
+
+            <div class="center-side">
+                <div class="masonry-box post-media">
+                    <img src="upload/blog_masonry_02.jpg" alt="" class="img-fluid">
+                    <div class="shadoweffect">
+                        <div class="shadow-desc">
+                            <div class="blog-meta">
+                                <span class="bg-green"><a href="blog-category-01.html" title="">@list.ElementAt(1).Category</a></span>
+                                <h4><a href="single.html" title="">@list.ElementAt(1).NewsTitle</a></h4>
+                                <small><a href="single.html" title="">@list.ElementAt(1).CreatedDate</a></small>
+                                <small><a href="blog-author.html" title="">@list.ElementAt(1).CreatedBy</a></small>
+                            </div><!-- end meta -->
+                        </div><!-- end shadow-desc -->
+                    </div><!-- end shadow -->
+                </div><!-- end post-media -->
+
+                <div class="masonry-box small-box post-media">
+                    <img src="upload/blog_masonry_03.jpg" alt="" class="img-fluid">
+                    <div class="shadoweffect">
+                        <div class="shadow-desc">
+                            <div class="blog-meta">
+                                <span class="bg-green"><a href="blog-category-01.html" title="">@list.ElementAt(2).Category</a></span>
+                                <h4><a href="single.html" title="">@list.ElementAt(2).NewsTitle</a></h4>
+                            </div><!-- end meta -->
+                        </div><!-- end shadow-desc -->
+                    </div><!-- end shadow -->
+                </div><!-- end post-media -->
+
+                <div class="masonry-box small-box post-media">
+                    <img src="upload/blog_masonry_04.jpg" alt="" class="img-fluid">
+                    <div class="shadoweffect">
+                        <div class="shadow-desc">
+                            <div class="blog-meta">
+                                <span class="bg-green"><a href="blog-category-01.html" title="">@list.ElementAt(3).Category</a></span>
+                                <h4><a href="single.html" title="">@list.ElementAt(3).NewsTitle</a></h4>
+                            </div><!-- end meta -->
+                        </div><!-- end shadow-desc -->
+                    </div><!-- end shadow -->
+                </div><!-- end post-media -->
+            </div><!-- end left-side -->
+
+            <div class="right-side hidden-md-down">
+                <div class="masonry-box post-media">
+                    <img src="upload/blog_masonry_05.jpg" alt="" class="img-fluid">
+                    <div class="shadoweffect">
+                        <div class="shadow-desc">
+                            <div class="blog-meta">
+                                <span class="bg-aqua"><a href="blog-category-01.html" title="">@list.ElementAt(4).Category</a></span>
+                                <h4><a href="single.html" title="">@list.ElementAt(4).NewsTitle</a></h4>
+                                <small><a href="single.html" title="">@list.ElementAt(4).CreatedDate</a></small>
+                                <small><a href="blog-author.html" title="">@list.ElementAt(4).CreatedBy</a></small>
+                            </div><!-- end meta -->
+                        </div><!-- end shadow-desc -->
+                    </div><!-- end shadow -->
+                </div><!-- end post-media -->
+            </div><!-- end right-side -->
+        </div><!-- end masonry -->
+    </div>
+</section>
