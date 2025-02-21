@@ -64,6 +64,47 @@ namespace Team7MVC.DAL.DAOs.CategoryDAO
                 return newCategoryId; // Return the generated ID
             }
         }
+        public async Task DeleteCategoryAsync(int categoryId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                // Check if the category has any child categories (i.e., it is a parent category)
+                var sqlCheckIfParent = "SELECT COUNT(*) FROM Category WHERE ParentCategoryId = @CategoryId";
+                var hasChildCategories = await connection.ExecuteScalarAsync<int>(sqlCheckIfParent, new { CategoryId = categoryId });
+
+                if (hasChildCategories > 0)
+                {
+                    // If the category has child categories, throw an exception
+                    throw new Exception("This category cannot be deleted because it has child categories.");
+                }
+
+                // Proceed with deleting the category if it has no child categories
+                var sqlDelete = "DELETE FROM Category WHERE CategoryID = @CategoryId";
+                await connection.ExecuteAsync(sqlDelete, new { CategoryId = categoryId });
+            }
+        }
+
+        public async Task<bool> UpdateCategoryAsync(Category category)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var sql = @"
+            UPDATE Category
+            SET CategoryName = @CategoryName,
+                CategoryDescription = @CategoryDescription,
+                ParentCategoryId = @ParentCategoryId,
+                IsActive = @IsActive
+            WHERE CategoryId = @CategoryId";
+
+                var result = await connection.ExecuteAsync(sql, category);
+                return result > 0; // Return true if the update was successful
+            }
+        }
+
+
 
     }
 }

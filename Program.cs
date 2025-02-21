@@ -8,6 +8,8 @@ using Team7MVC.DAL.DAOs.CategoryDAO;
 using Team7MVC.DAL.DAOs.NewArticleDAO;
 using Team7MVC.DAL.DAOs.SystemAccountDAO;
 using Team7MVC.DAL.Repositories;
+using Team7MVC.BLL.Services.ReportService;
+using Team7MVC.DAL.Repositories.ReportRepository;
 
 namespace Team7MVC
 {
@@ -39,9 +41,11 @@ namespace Team7MVC
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<INewArticleService, NewArticleService>();
             // Report Service
+
+            // Report Service
             builder.Services.AddScoped<IReportRepository, ReportRepository>();
             builder.Services.AddScoped<IReportService, ReportService>();
-           
+
             //AccountService
             builder.Services.AddSingleton<ISystemAccountDAO, SystemAccountDAO>();
             builder.Services.AddSingleton<ISystemAccountRepository, SystemAccountRepository>();
