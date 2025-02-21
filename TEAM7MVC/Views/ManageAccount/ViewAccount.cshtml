@@ -1,0 +1,68 @@
+﻿@model ManageAccountModel
+
+@{
+    ViewData["Title"] = "ViewAccount";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="col-lg-6 col-md-8 col-sm-10 bg-light p-4 rounded shadow">
+        <h2 class="text-center">Edit Account</h2>
+
+        <form id="updateAccountForm">
+            <input type="hidden" asp-for="AccountID" />
+
+            <div class="mb-3">
+                <label asp-for="AccountName" class="form-label">Name</label>
+                <input asp-for="AccountName" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="AccountEmail" class="form-label">Email</label>
+                <input asp-for="AccountEmail" type="email" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="AccountRole" class="form-label">Role</label>
+                <select asp-for="AccountRole" class="form-select">
+                    <option value="Admin">Admin</option>
+                    <option value="Staff">Staff</option>
+                    <option value="Lecturer">Lecturer</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-primary" onclick="updateAccount()">Save Changes</button>
+                <a asp-action="AllAccount" class="btn btn-primary">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function updateAccount() {
+        var formData = $("#updateAccountForm").serialize();
+
+        $.ajax({
+            type: "POST",
+            url: "/ManageAccount/UpdateAccount",
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    location.reload(); 
+                } else {
+                    alert("Error updating account.");
+                }
+            },
+            error: function () {
+                alert("Failed to update account.");
+            }
+        });
+    }
+</script>

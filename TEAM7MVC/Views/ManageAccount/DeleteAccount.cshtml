@@ -1,0 +1,28 @@
+﻿@model ManageAccountModel
+
+@{
+    ViewData["Title"] = "DeleteAccount";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function deleteAccount(accountID) {
+        if (confirm('Are you sure you want to delete this account?')) {
+            $.ajax({
+                url: '/ManageAccount/DeleteAccount/' + accountID,  // Đảm bảo URL đúng
+                type: 'DELETE',  // Phương thức DELETE
+                success: function(response) {
+                    alert(response.message);  // Hiển thị thông báo thành công
+                    location.reload();  // Reload lại trang để cập nhật danh sách
+                },
+                error: function() {
+                    alert("Error deleting account.");  // Thông báo lỗi nếu có vấn đề
+                }
+            });
+        }
+    }
+</script>

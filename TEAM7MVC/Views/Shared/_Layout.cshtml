@@ -99,8 +99,8 @@
                            @if(!isLogin){
                             <a asp-controller="Authentication" asp-action="Login" style="padding-left: 2rem;" title="logins icons"><img src="~/images/loginLogo.png" style="height: auto;width: 7%;" /></a>
                            }else
-                           {
-                                <a asp-controller="Authentication" asp-action="Login" style="padding-left: 2rem;" title="logins icons">Hi, @_httpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value</a>
+                            {
+                                <a asp-controller="ManageAccount" asp-action="AllAccount" style="padding-left: 2rem;" title="logins icons">Hi, @_httpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value</a>
                             }
                         </div><!-- end search -->
                     </div><!-- end col -->

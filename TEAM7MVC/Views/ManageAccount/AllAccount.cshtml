@@ -1,0 +1,100 @@
+﻿@model IEnumerable<ManageAccountModel>
+
+@{
+    ViewData["Title"] = "AllAccount";
+}
+
+<!-- Page Title -->
+<div class="page-title">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <h2><i class="fa fa-users"></i> Manage Accounts</h2>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Manage Accounts</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Account Management Table -->
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-wrapper">
+                    <h4>Account List</h4>
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var account in Model)
+                            {
+                                <tr>
+                                    <td>@account.AccountID</td>
+                                    <td>@account.AccountName</td>
+                                    <td>@account.AccountEmail</td>
+                                    <td>@account.AccountRole</td>
+                                    <td>
+                                        <a asp-controller="ManageAccount" asp-action="ViewAccount" asp-route-id="@account.AccountID" class="btn btn-warning btn-sm">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </a>
+                                        <a href="javascript:void(0);" class="btn btn-warning btn-sm" onclick="deleteAccount(@account.AccountID)">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </a>
+
+
+
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function deleteAccount(accountID) {
+        if (confirm('Are you sure you want to delete this account?')) {
+            $.ajax({
+                url: '/ManageAccount/DeleteAccount/' + accountID,  // Đảm bảo URL đúng
+                type: 'DELETE',  // Phương thức DELETE
+                success: function(response) {
+                    alert(response.message);  // Hiển thị thông báo thành công
+                    location.reload();  // Reload lại trang để cập nhật danh sách
+                },
+                error: function() {
+                    alert("Error deleting account.");  // Thông báo lỗi nếu có vấn đề
+                }
+            });
+        }
+    }
+</script>
+<!-- Basic Styles -->
+<style>
+    .page-wrapper {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .table th, .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+</style>
