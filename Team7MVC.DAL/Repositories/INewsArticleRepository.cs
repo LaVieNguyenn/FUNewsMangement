@@ -10,7 +10,7 @@ namespace Team7MVC.DAL.Repositories
 {
     public interface INewsArticleRepository
     {
-        Task<IEnumerable<NewsArticle>> GetAllNewsArticlesAsync();   
+        Task<IEnumerable<NewsArticle>> GetAllNewsArticlesAsync();
         Task<NewsArticle> GetNewsArticleByIdAsync(int id);
         Task<IEnumerable<NewsArticleDTO>> GetAllNewestAriticlesAsync();
         Task<IEnumerable<NewsArticleDTO>> GetAllNewestAriticlesAsyncByAsync(string categoryName, int max);

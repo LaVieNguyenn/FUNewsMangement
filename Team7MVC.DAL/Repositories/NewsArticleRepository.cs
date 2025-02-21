@@ -14,12 +14,12 @@ namespace Team7MVC.DAL.Repositories
         private readonly INewArticleDAO _newArticleDAO;
         public NewsArticleRepository(INewArticleDAO newArticleDAO)
         {
-            _newArticleDAO = newArticleDAO;            
+            _newArticleDAO = newArticleDAO;
         }
 
         public Task<IEnumerable<NewsArticleDTO>> GetAllNewestAriticlesAsync()
         {
-            return _newArticleDAO.GetAllAsync();    
+            return _newArticleDAO.GetAllAsync();
         }
 
         public Task<IEnumerable<NewsArticleDTO>> GetAllNewestAriticlesAsyncByAsync(string categoryName, int max)
