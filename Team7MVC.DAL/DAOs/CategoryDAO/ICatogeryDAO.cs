@@ -13,7 +13,9 @@ namespace Team7MVC.DAL.DAOs.CategoryDAO
         Task<Category> GetByIdAsync(int id);
         Task<IEnumerable<Category>> GetAllCategory();
 
-        Task<int> CreateCategoryAsync(Category category); // Returns the new CategoryID
+        Task<int> CreateCategoryAsync(Category category);
+        Task DeleteCategoryAsync(int id);
+        Task<bool> UpdateCategoryAsync(Category category);
     }
 
 }

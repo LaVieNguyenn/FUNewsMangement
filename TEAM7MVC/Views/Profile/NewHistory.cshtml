@@ -1,0 +1,77 @@
+﻿@model Team7MVC.Models.ProfileViewModel
+@{
+    ViewData["Title"] = "My News History";
+}
+
+<h2>My News History</h2>
+
+@if (!Model.NewsArticleCreatedBies.Any() && !Model.NewsArticleUpdatedBies.Any())
+{
+    <p>No news articles found.</p>
+}
+else
+{
+    <h3>Articles Created by Me</h3>
+    @if (!Model.NewsArticleCreatedBies.Any())
+    {
+        <p>No articles created.</p>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Headline</th>
+                    <th>Created Date</th>
+                    <th>News Source</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var article in Model.NewsArticleCreatedBies)
+                {
+                    <tr>
+                        <td>@article.NewsTitle</td>
+                        <td>@article.Headline</td>
+                        <td>@article.CreatedDate.ToString("yyyy-MM-dd")</td>
+                        <td>@article.NewsSource</td>
+                        <td>@article.CategoryId</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <h3>Articles Updated by Me</h3>
+    @if (!Model.NewsArticleUpdatedBies.Any())
+    {
+        <p>No articles updated.</p>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Headline</th>
+                    <th>Modified Date</th>
+                    <th>News Source</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var article in Model.NewsArticleUpdatedBies)
+                {
+                    <tr>
+                        <td>@article.NewsTitle</td>
+                        <td>@article.Headline</td>
+                        <td>@article.ModifiedDate?.ToString("yyyy-MM-dd")</td>
+                        <td>@article.NewsSource</td>
+                        <td>@article.CategoryId</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}

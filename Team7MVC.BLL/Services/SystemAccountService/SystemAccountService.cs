@@ -36,7 +36,20 @@ namespace Team7MVC.BLL.Services.SystemAccountService
         {
              await _repository.DeleteAccountById(accountID);
         }
+        public Task<SystemAccount?> GetAccountByEmailAsync(string email) // lay tk theo email
+        {
+            return _repository.GetAccountByEmailAsync(email);
+        }
 
+        public Task UpdateProfileAsync(SystemAccount account) // cap nhat tk
+        {
+            return _repository.UpdateAccountAsync(account);
+        }
+
+        public Task<SystemAccount> GetAccountWithNewsHistoryAsync(string email)
+        {
+               return _repository.GetAccountWithNewsHistoryAsync(email);
+        }
     }
 }
         

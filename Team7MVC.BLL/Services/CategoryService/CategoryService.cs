@@ -41,5 +41,19 @@ namespace Team7MVC.BLL.Services.CategoryService
             // You can implement this if you need a method to get all categories with some specific logic
             throw new NotImplementedException();
         }
+        public async Task DeleteCategoryAsync(int categoryId)
+        {
+            await _repository.DeleteCategoryAsync(categoryId);
+        }
+        public async Task<Category> GetCategoryByIdAsync(int id)
+        {
+            return await _repository.GetCategoryByIdAsync(id); // Call the repository to get the category
+        }
+        public async Task<bool> UpdateCategoryAsync(Category category)
+        {
+            return await _repository.UpdateCategoryAsync(category);
+        }
+
+
     }
 }

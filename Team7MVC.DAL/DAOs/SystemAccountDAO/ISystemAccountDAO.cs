@@ -15,12 +15,8 @@ namespace Team7MVC.DAL.DAOs.SystemAccountDAO
         Task<SystemAccount> GetAccountById(int accountID);
         Task<bool> UpdateAccount(SystemAccountDTO model);
         Task DeleteAccountById(int accountID);
-
-
-
-
-
-
-
+        Task<SystemAccount?> GetAccountByEmailAsync(string email); // lay tk theo email
+        Task UpdateAccountAsync(SystemAccount account); // cap nhat tk
+        Task<SystemAccount> GetAccountWithNewsHistoryAsync(string email);
     }
 }

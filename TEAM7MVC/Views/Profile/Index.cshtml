@@ -1,0 +1,19 @@
+﻿@model Team7MVC.Models.ProfileViewModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<h2>My Profile</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<table class="table">
+    <tr><th>Email</th><td>@Model.AccountEmail</td></tr>
+    <tr><th>Full Name</th><td>@Model.AccountName</td></tr>
+    <tr><th>Role</th><td>@Model.AccountRole</td></tr>
+</table>
+
+<a asp-action="Edit" class="btn btn-primary">Edit Profile</a>

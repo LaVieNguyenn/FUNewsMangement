@@ -25,15 +25,21 @@ namespace Team7MVC
                     options.LoginPath = "/Authentication/Login";
                     options.AccessDeniedPath = "/";
                 });
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("StaffOnly", policy => policy.RequireRole("Staff"));
+            });
             builder.Services.AddHttpContextAccessor();
             //New Article
             builder.Services.AddSingleton<INewArticleDAO, NewArticleDAO>();
             builder.Services.AddSingleton<INewsArticleRepository, NewsArticleRepository>();
+            builder.Services.AddScoped<INewArticleService, NewArticleService>();
             builder.Services.AddSingleton<ICategoryRepository, CategoryRepository>();
             builder.Services.AddSingleton<ICatogeryDAO, CategoryDAO>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<INewArticleService, NewArticleService>();
-
+            
+           
             //AccountService
             builder.Services.AddSingleton<ISystemAccountDAO, SystemAccountDAO>();
             builder.Services.AddSingleton<ISystemAccountRepository, SystemAccountRepository>();

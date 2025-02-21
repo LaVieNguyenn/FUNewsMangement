@@ -1,0 +1,14 @@
+@model Team7MVC.ViewModels.ReportViewModel
+
+@{
+    ViewData["Title"] = "Report Result";
+}
+
+<h2>Report Result</h2>
+
+<div>
+    <h3>@Model.ReportName</h3>
+    <p>From: @Model.StartDate.ToShortDateString() To: @Model.EndDate.ToShortDateString()</p>
+    <p>Quantity: @Model.Quantity</p>
+    <p>Total: @Model.Total</p>
+</div>
