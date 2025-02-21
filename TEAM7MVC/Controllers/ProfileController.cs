@@ -10,7 +10,7 @@ using Team7MVC.Models;
 
 namespace Team7MVC.Controllers
 {
-    [Authorize(Roles = "Staff")]
+    [Authorize(Policy = "StaffOnly")]
     public class ProfileController : Controller
     {
         private readonly ISystemAccountService _services;
