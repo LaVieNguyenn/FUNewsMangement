@@ -29,7 +29,7 @@ namespace Team7MVC.DAL.Repositories
 
         public Task<IEnumerable<NewsArticle>> GetAllNewsArticlesAsync()
         {
-            return _newArticleDAO.GetAllNewestNews();
+            return _newArticleDAO.GetAllNews();
         }
 
         public Task<NewsArticle> GetNewsArticleByIdAsync(int id)

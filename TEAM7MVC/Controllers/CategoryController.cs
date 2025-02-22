@@ -16,7 +16,7 @@ namespace Team7MVC.Controllers
             _newsArticleService = newsArticleService;
         }
         [HttpPost]
-       
+
         public async Task<IActionResult> CreateCategory(CategoryViewModel category)
         {
             // Debugging - Log received values
@@ -48,17 +48,18 @@ namespace Team7MVC.Controllers
                 }
 
                 // Manually parse IsActive
-                
+
 
                 Console.WriteLine($"Saving Category: {category.CategoryName}, ParentCategoryId: {category.ParentCategoryId}, IsActive: {category.IsActive}");
-                
-                var newCategoryId = await _categoryService.CreateCategoryAsync(new  Category {
+
+                var newCategoryId = await _categoryService.CreateCategoryAsync(new Category
+                {
                     CategoryName = category.CategoryName,
                     CategoryDescription = category.CategoryDescription,
                     ParentCategoryId = category.ParentCategoryId,
                     IsActive = category.IsActive,
                 });
-                
+
                 TempData["SuccessMessage"] = "Category created successfully!";
                 return RedirectToAction("Index");
             }
@@ -136,10 +137,10 @@ namespace Team7MVC.Controllers
                     IsActive = category.IsActive,
                 });
                 // Map to entity if necessary
-               
 
-                
-                    if (categoryEntity)
+
+
+                if (categoryEntity)
                 {
                     TempData["SuccessMessage"] = "Category updated successfully!";
                     return RedirectToAction("Index"); // Redirect after success
@@ -152,9 +153,20 @@ namespace Team7MVC.Controllers
 
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var categories = await _categoryService.GetAllAsync();
+            var newsArticles = await _newsArticleService.GetNewsArticlesAsync();
+            Console.WriteLine($"Total Categories: {categories.Count()}");
+            Console.WriteLine($"Total News Articles: {newsArticles.Count()}");
+            var viewModel = new CategoryViewModel
+            {
+                Categories = categories.ToList(),
+                NewsArticles = newsArticles.ToList()
+            };
+
+            return View(viewModel);
         }
+
     }
 }
