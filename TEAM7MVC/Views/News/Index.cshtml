@@ -1,0 +1,14 @@
+﻿@model List<Team7MVC.Models.NewArticleViewModel>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if(Model.Any())
+{
+    <partial name="NewestNew" model="Model.Take(5).ToList()" />
+<section class="section">
+    <div class="container">
+            <partial name="NewsByCategory" model="Model.Skip(5).ToList()" />
+        </div><!-- end container -->
+</section>
+}
