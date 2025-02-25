@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Team7MVC.DAL.DTOs;
 using Team7MVC.DAL.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Team7MVC.DAL.DAOs.NewArticleDAO
 {
@@ -57,6 +58,15 @@ namespace Team7MVC.DAL.DAOs.NewArticleDAO
                 await connection.OpenAsync();
                 var sql = "SELECT * FROM NewsArticle WHERE NewsArticleID = @Id";
                 return await connection.QueryFirstOrDefaultAsync<NewsArticle>(sql, new { Id = id });
+            }
+        }
+        public async Task<IEnumerable<NewsArticle>> GetAllNews()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var sql = "SELECT * FROM NewsArticle ORDER BY NewsArticleID DESC";
+                return await connection.QueryAsync<NewsArticle>(sql);
             }
         }
     }

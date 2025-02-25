@@ -15,5 +15,6 @@ namespace Team7MVC.DAL.DAOs.NewArticleDAO
         Task<NewsArticle> GetByIdAsync(int id);
         Task<IEnumerable<NewsArticle>> GetAllNewestNews();
         Task<IEnumerable<NewsArticleDTO>> GetAllNewstNewByCategory(string CategoryName, int max);
+        Task<IEnumerable<NewsArticle>> GetAllNews();
     }
 }

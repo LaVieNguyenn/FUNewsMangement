@@ -30,9 +30,5 @@ namespace Team7MVC.BLL.Services.NewsArticleService
         {
             return _repository.GetAllNewsArticlesAsync();
         }
-        public Task<IEnumerable<NewsArticle>> GetAllNewsArticlesAsync()
-        {
-            return _repository.GetAllNewsArticlesAsync();
-        }
     }
 }

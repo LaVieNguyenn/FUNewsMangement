@@ -3,25 +3,26 @@
 @using Team7MVC.BLL.Services.NewsArticleService
 @inject INewArticleService _newsArticleService
 @model CategoryViewModel
-@{
-    var list = await _service.GetAllAsync();
-    var newsArticles = await _newsArticleService.GetNewsArticlesAsync(); // Fetch news articles
-}
 
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Add these inside <head> -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 <script>
+    console.log("Script loaded successfully!");
     document.addEventListener("DOMContentLoaded", function () {
         console.log("Script loaded successfully!");
 
         var editModal = document.getElementById("editCategoryModal");
-
+        var isExpanded = this.getAttribute("aria-expanded") === "true";
         if (!editModal) {
             console.error("Modal element not found.");
             return;
         }
-
+           this.style.color = isExpanded ? "#dc3545" : "#007bff";
         editModal.addEventListener("show.bs.modal", function (event) {
             console.log("Modal is opening!");
 
@@ -50,6 +51,37 @@
             document.getElementById("editIsActive").checked = isActive;
         });
     });
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".toggle-news").forEach(button => {
+            button.addEventListener("click", function () {
+                var target = document.querySelector(this.getAttribute("data-target"));
+                if (target) {
+                    var isVisible = target.style.display === "block";
+                    target.style.display = isVisible ? "none" : "block";
+                    this.textContent = isVisible ? "Show Related News" : "Hide Related News";
+                     this.classList.toggle("btn-info", isVisible);
+                this.classList.toggle("btn-danger", !isVisible);
+                }
+            });
+        });
+    });
+       document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".toggle-babyNews").forEach(button => {
+            button.addEventListener("click", function () {
+                var targetId = this.getAttribute("data-target");
+                var target = document.querySelector(targetId);
+
+                if (target) {
+                    var isVisible = target.style.display === "block";
+                    target.style.display = isVisible ? "none" : "block";
+                    this.textContent = isVisible ? "Show Sub-Category Related News" : "Hide Related News";
+                     this.classList.toggle("btn-info", isVisible);
+                this.classList.toggle("btn-danger", !isVisible);
+                }
+            });
+        });
+    });
+
 </script>
 
 
@@ -73,8 +105,8 @@
 
 <section class="section">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+        <div class="row" style="justify-content:center">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" style="width:100%">
                 <div class="page-wrapper">
                     <h3>Category List</h3>
 
@@ -83,7 +115,7 @@
 
                     <!-- Add New Category Form (Hidden initially) -->
                     <div id="addCategoryForm" class="collapse">
-                        <form  asp-controller="Category" asp-action="CreateCategory" class="mb-3">
+                        <form asp-controller="Category" asp-action="CreateCategory" class="mb-3">
                             <div class="mb-3">
                                 <label for="CategoryName" class="form-label">Category Name</label>
                                 <input type="text" asp-for="@Model.CategoryName" class="form-control" id="CategoryName" name="CategoryName" required>
@@ -96,7 +128,7 @@
                                 <label for="ParentCategoryId" class="form-label">Parent Category</label>
                                 <select class="form-control" id="ParentCategoryId" name="ParentCategoryId">
                                     <option value="">None</option>
-                                    @foreach (var category in list.Where(c => c.ParentCategoryId == null))
+                                    @foreach (var category in Model.Categories.Where(c => c.ParentCategoryId == null))
                                     {
                                         <option value="@category.CategoryId">@category.CategoryName</option>
                                     }
@@ -104,17 +136,17 @@
                             </div>
                             <div class="mb-3">
                                 <label for="IsActive" class="form-label">Is Active</label>
-                                <input type="checkbox" id="IsActive" asp-for="@Model.IsActive"  name="IsActive" value=true>
+                                <input type="checkbox" id="IsActive" asp-for="@Model.IsActive" name="IsActive" value=true>
                                 <span> Tick to activate the category</span>
                             </div>
                             <button type="submit" class="btn btn-success">Save Category</button>
                         </form>
                     </div>
 
-                    </div>
+                </div>
 
                 <!-- Modal for Editing Category -->
-                
+
                 <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -124,7 +156,7 @@
                             </div>
                             <div class="modal-body">
                                 <form id="editCategoryForm" asp-controller="Category" asp-action="SaveEditedCategory">
-                                
+
                                     <!-- Hidden field for CategoryId -->
                                     <!-- Hidden field for CategoryId -->
                                     <input type="hidden" id="editCategoryId" name="CategoryId" />
@@ -141,7 +173,7 @@
                                         <label for="editParentCategoryId" class="form-label">Parent Category</label>
                                         <select id="editParentCategoryId" name="ParentCategoryId" class="form-control">
                                             <option value="">None</option>
-                                            @foreach (var category in list.Where(c => c.ParentCategoryId == null))
+                                            @foreach (var category in Model.Categories.Where(c => c.ParentCategoryId == null))
                                             {
                                                 <option value="@category.CategoryId">@category.CategoryName</option>
                                             }
@@ -171,13 +203,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var category in list.Where(c => c.ParentCategoryId == null)) // Top-level categories
+                        @foreach (var category in Model.Categories.Where(c => c.ParentCategoryId == null)) // Top-level categories
                         {
                             var collapseId = "collapse-" + category.CategoryId; // Unique ID for collapse
 
                             <tr>
                                 <td>
-                                    <button class="btn btn-link category-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false">
+                                    <button class="btn btn-link category-toggle" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#@collapseId"
+                                            aria-expanded="false">
                                         <strong>@category.CategoryName</strong>
                                     </button>
                                 </td>
@@ -187,8 +221,8 @@
                                     <!-- Check if the category has related news articles -->
                                     @{
                                         // Check if this category or any of its subcategories have related news
-                                        bool hasRelatedNews = newsArticles.Any(a => a.CategoryId == category.CategoryId)
-                                        || list.Any(sub => sub.ParentCategoryId == category.CategoryId && newsArticles.Any(a => a.CategoryId == sub.CategoryId));
+                                        bool hasRelatedNews = Model.NewsArticles.Any(a => a.CategoryId == category.CategoryId)
+                                        || Model.Categories.Any(sub => sub.ParentCategoryId == category.CategoryId && Model.NewsArticles.Any(a => a.CategoryId == sub.CategoryId));
                                     }
 
                                     @if (!hasRelatedNews)
@@ -219,42 +253,56 @@
                                         <button type="button" class="btn btn-danger btn-sm disabled" title="Category used">
                                             <i class="fa fa-trash"></i> Delete
                                         </button>
+                                        <!-- Explanation message -->
+                                        <div class="text-danger small mt-1">
+                                            Category in use!!!
+                                        </div>
                                     }
                                 </td>
                             </tr>
 
+
                             <!-- Check if there are any news articles for this category -->
-                            @if (newsArticles.Any(a => a.CategoryId == category.CategoryId))
+                            @if (Model.NewsArticles.Any(a => a.CategoryId == category.CategoryId))
                             {
-                                <!-- Display associated news articles for this category -->
+                                var newsSectionId = "news-" + category.CategoryId; // Unique ID for each news section
+
                                 <tr>
                                     <td colspan="4">
-                                        <h5>Related News Articles</h5>
-                                        <table class="table table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>News Title</th>
-                                                    <th>News Content</th>
-                                                    <th>Category ID</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var article in newsArticles.Where(a => a.CategoryId == category.CategoryId))
-                                                {
+                                        <button class="btn btn-info btn-sm toggle-news" data-bs-toggle="collapse" data-target="#@newsSectionId" aria-expanded="false">
+                                            Show Related News
+                                        </button>
+
+                                        <div id="@newsSectionId" class="news-articles mt-2" style="display: none;">
+                                            <h5>Related News Articles</h5>
+                                            <table class="table table-sm">
+                                                <thead>
                                                     <tr>
-                                                        <td>@article.NewsTitle</td> <!-- Display the title of each news article -->
-                                                        <td>@article.NewsContent</td> <!-- Display the content of the news article -->
-                                                        <td>@article.CategoryId</td> <!-- Display the category ID of the article -->
+                                                        <th>News Title</th>
+                                                        <th>News Content</th>
+                                                        <th>Category ID</th>
                                                     </tr>
-                                                }
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var article in Model.NewsArticles.Where(a => a.CategoryId == category.CategoryId))
+                                                    {
+                                                        <tr>
+                                                            <td>@article.NewsTitle</td>
+                                                            <td>@article.NewsContent</td>
+                                                            <td>@article.CategoryId</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </td>
                                 </tr>
                             }
 
+
+
                             <!-- Display associated news articles for the subcategories -->
-                            @if (list.Any(c => c.ParentCategoryId == category.CategoryId)) // If it has subcategories
+                            @if (Model.Categories.Any(c => c.ParentCategoryId == category.CategoryId)) // If it has subcategories
                             {
                                 <tr id="@collapseId" class="collapse">
                                     <td colspan="4">
@@ -269,8 +317,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach (var subCategory in list.Where(c => c.ParentCategoryId == category.CategoryId))
+                                                @foreach (var subCategory in Model.Categories.Where(c => c.ParentCategoryId == category.CategoryId))
                                                 {
+                                                    bool hasNewsArticles = Model.NewsArticles.Any(a => a.CategoryId == subCategory.CategoryId);
                                                     <tr>
                                                         <td>└ @subCategory.CategoryName</td>
                                                         <td>@subCategory.CategoryDescription</td>
@@ -278,58 +327,84 @@
                                                         <td>@(subCategory.IsActive ? "Yes" : "No")</td>
                                                         <td>
                                                             <!-- Check if subcategory has related news articles -->
-                                                            @if (!newsArticles.Any(a => a.CategoryId == subCategory.CategoryId))
-                                                            { <!-- Show Update and Delete buttons if no news articles exist for this subcategory -->
-                                                                <form asp-controller="Category" asp-action="ShowEditCategoryForm" asp-route-id="@subCategory.CategoryId" >
-                                                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCategoryModal"
-                                                                            data-id="@subCategory.CategoryId"
-                                                                            data-name="@subCategory.CategoryName"
-                                                                            data-description="@subCategory.CategoryDescription"
-                                                                            data-parentid="@subCategory.ParentCategoryId"
-                                                                            data-isactive="@subCategory.IsActive">
-                                                                        <i class="fa fa-edit"></i> Update
-                                                                    </button>
+                                                            @if (!hasNewsArticles)
+                                                            {
+                                                                <!-- Enabled buttons -->
+                                                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCategoryModal"
+                                                                        data-id="@subCategory.CategoryId"
+                                                                        data-name="@subCategory.CategoryName"
+                                                                        data-description="@subCategory.CategoryDescription"
+                                                                        data-parentid="@subCategory.ParentCategoryId"
+                                                                        data-isactive="@subCategory.IsActive">
+                                                                    <i class="fa fa-edit"></i> Update
+                                                                </button>
 
-                                                                </form>
-
-                                                                <form asp-controller="Category" asp-action="DeleteCategory" asp-route-id="@subCategory.CategoryId" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this category?');">
+                                                                <form asp-controller="Category" asp-action="DeleteCategory" asp-route-id="@subCategory.CategoryId" class="d-inline"
+                                                                      onsubmit="return confirm('Are you sure you want to delete this category?');">
                                                                     <button type="submit" class="btn btn-danger btn-sm">
                                                                         <i class="fa fa-trash"></i> Delete
                                                                     </button>
                                                                 </form>
                                                             }
+                                                            else
+                                                            {
+                                                                <!-- Disabled buttons with tooltip -->
+                                                                <!-- Disabled buttons -->
+                                                                <button type="button" class="btn btn-warning btn-sm disabled">
+                                                                    <i class="fa fa-edit"></i> Update
+                                                                </button>
+
+                                                                <button type="button" class="btn btn-danger btn-sm disabled">
+                                                                    <i class="fa fa-trash"></i> Delete
+                                                                </button>
+
+                                                                <!-- Explanation message -->
+                                                                <div class="text-danger small mt-1">
+                                                                    Category in use!!!
+                                                                </div>
+                                                            }
                                                         </td>
                                                     </tr>
                                                     <!-- Check if there are any news articles for this subcategory -->
-                                                    @if (newsArticles.Any(a => a.CategoryId == subCategory.CategoryId))
+                                                    var newsBabySectionId = "news-" + subCategory.CategoryId;
+
+                                                    if (Model.NewsArticles.Any(a => a.CategoryId == subCategory.CategoryId))
                                                     {
                                                         <tr>
                                                             <td colspan="5">
-                                                                <h5>Related News Articles</h5>
-                                                                <table class="table table-sm">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>News Title</th>
-                                                                            <th>News HeadLine</th>
-                                                                            <th>News Source</th>
-                                                                            <th>News Status</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        @foreach (var article in newsArticles.Where(a => a.CategoryId == subCategory.CategoryId))
-                                                                        {
+                                                                <button class="btn btn-info btn-sm toggle-babyNews" data-target="#@newsBabySectionId">
+                                                                    Show Sub-Category Related News
+                                                                </button>
+
+                                                                <div id="@newsBabySectionId" class="news-articles mt-2" style="display: none;">
+                                                                    <h5>Related News Articles</h5>
+                                                                    <table class="table table-sm">
+                                                                        <thead>
                                                                             <tr>
-                                                                                <td>@article.NewsTitle</td>
-                                                                                <td>@article.Headline</td>
-                                                                                <td>@article.NewsSource</td>
-                                                                                <td>@article.NewsStatus</td>
+                                                                                <th>News Title</th>
+                                                                                <th>News HeadLine</th>
+                                                                                <th>News Source</th>
+                                                                                <th>News Status</th>
                                                                             </tr>
-                                                                        }
-                                                                    </tbody>
-                                                                </table>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @foreach (var article in Model.NewsArticles.Where(a => a.CategoryId == subCategory.CategoryId))
+                                                                            {
+                                                                                <tr>
+                                                                                    <td>@article.NewsTitle</td>
+                                                                                    <td>@article.Headline</td>
+                                                                                    <td>@article.NewsSource</td>
+                                                                                    <td>@article.NewsStatus</td>
+                                                                                </tr>
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     }
+                                                
+
                                                 }
                                             </tbody>
                                         </table>
@@ -341,14 +416,24 @@
                 </table>
 
 
-                </div>
             </div>
-            
         </div>
+
     </div>
 </section>
 
 <style>
+    .toggle-babyNews[aria-expanded="true"] {
+        background-color: #dc3545 !important; /* Red */
+        border-color: #dc3545 !important;
+        color: white !important;
+    }
+
+    .toggle-News[aria-expanded="true"] {
+        background-color: #dc3545 !important; /* Red */
+        border-color: #dc3545 !important;
+        color: white !important;
+    }
     .category-toggle {
         color: inherit; /* Use parent text color */
         text-decoration: none; /* Remove underline */
@@ -358,5 +443,17 @@
             color: inherit; /* Keep text color the same on hover */
             text-decoration: underline; /* Add a subtle underline */
             background-color: cornflowerblue; /* Prevent background color change */
+        }
+
+        .category-toggle[aria-expanded="true"] {
+            background-color: cornflowerblue !important; /* Highlight color when expanded */
+            color: white !important; /* Change text color */
+            border-radius: 5px; /* Optional: Add rounded corners */
+            padding: 5px 10px; /* Optional: Add padding for better appearance */
+        }
+
+        .category-toggle[aria-expanded="false"] {
+            background-color: transparent !important; /* Default state */
+            color: inherit !important;
         }
 </style>
