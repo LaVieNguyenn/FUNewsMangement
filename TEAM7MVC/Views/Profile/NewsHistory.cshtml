@@ -1,21 +1,18 @@
 ﻿@model Team7MVC.Models.ProfileViewModel
 @{
     ViewData["Title"] = "My News History";
-    var createdArticles = ViewBag.CreatedArticles as List<Team7MVC.Models.NewArticleViewModel>;
-    var updatedArticles = ViewBag.UpdatedArticles as List<Team7MVC.Models.NewArticleViewModel>;
 }
 
 <h2>My News History</h2>
 
-@if ((createdArticles == null || !createdArticles.Any())
-   && (updatedArticles == null || !updatedArticles.Any()))
+@if (!Model.CreatedArticles.Any() && !Model.UpdatedArticles.Any())
 {
     <p>No news articles found.</p>
 }
 else
 {
     <h3>Articles Created by Me</h3>
-    @if (createdArticles == null || !createdArticles.Any())
+    @if (!Model.CreatedArticles.Any())
     {
         <p>No articles created.</p>
     }
@@ -32,7 +29,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var article in createdArticles)
+                @foreach (var article in Model.CreatedArticles)
                 {
                     <tr>
                         <td>@article.NewsTitle</td>
@@ -47,7 +44,7 @@ else
     }
 
     <h3>Articles Updated by Me</h3>
-    @if (updatedArticles == null || !updatedArticles.Any())
+    @if (!Model.UpdatedArticles.Any())
     {
         <p>No articles updated.</p>
     }
@@ -64,7 +61,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var article in updatedArticles)
+                @foreach (var article in Model.UpdatedArticles)
                 {
                     <tr>
                         <td>@article.NewsTitle</td>

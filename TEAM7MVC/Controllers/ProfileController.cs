@@ -76,7 +76,7 @@ namespace Team7MVC.Controllers
             existingAccount.AccountRole = profileViewModel.AccountRole;
 
             await _services.UpdateProfileAsync(existingAccount);
-
+                
             TempData["SuccessMessage"] = "Profile updated successfully!";
             return RedirectToAction("Index");
         }
@@ -87,7 +87,7 @@ namespace Team7MVC.Controllers
             var account = await _services.GetAccountWithNewsHistoryAsync(email);
 
             if (account == null)
-                return NotFound();
+                return RedirectToAction("Login", "Authentication");
 
             var createdArticles = account.NewsArticleCreatedBies?.Select(article => new NewArticleViewModel
             {
@@ -106,7 +106,7 @@ namespace Team7MVC.Controllers
                 NewsArticleId = article.NewsArticleId,
                 NewsTitle = article.NewsTitle,
                 Headline = article.Headline,
-                CreatedDate = article.CreatedDate,
+                CreatedDate = article.ModifiedDate ?? article.CreatedDate,
                 NewsContent = article.NewsContent,
                 NewsSource = article.NewsSource ?? "N/A",
                 Category = article.Category?.CategoryName ?? "Unknown",
@@ -119,14 +119,12 @@ namespace Team7MVC.Controllers
                 AccountName = account.AccountName,
                 AccountEmail = account.AccountEmail,
                 AccountRole = account.AccountRole,
-                NewsArticleCreatedBies = account.NewsArticleCreatedBies,
-                NewsArticleUpdatedBies = account.NewsArticleUpdatedBies
+                CreatedArticles = createdArticles ?? new List<NewArticleViewModel>(),
+                UpdatedArticles = updatedArticles ?? new List<NewArticleViewModel>()
             };
-
-            ViewBag.CreatedArticles = createdArticles;
-            ViewBag.UpdatedArticles = updatedArticles;
 
             return View(profileViewModel);
         }
+
     }
 }
