@@ -1,0 +1,75 @@
+﻿@model SystemAccountDTONew
+
+@{
+    ViewData["Title"] = "AddAccount";
+}
+
+<div class="container mt-4">
+    <h2>Add New Account</h2>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+    }
+
+    <form asp-controller="ManageAccount" asp-action="AddAccount" method="post">
+        <div class="form-group">
+            <label for="AccountName">Account Name</label>
+            <input type="text" class="form-control" asp-for="AccountName" required>
+        </div>
+
+        <div class="form-group">
+            <label for="AccountEmail">Email</label>
+            <input type="email" class="form-control" asp-for="AccountEmail" required>
+        </div>
+
+        <div class="form-group">
+            <label for="AccountRole">Role</label>
+            <select class="form-control" asp-for="AccountRole">
+                <option value="Admin">Admin</option>
+                <option value="Staff">Staff</option>
+                <option value="Lecturer">Lecturer</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="AccountPassword">Password</label>
+            <input type="password" class="form-control" asp-for="AccountPassword" required>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-save"></i> Save
+            </button>
+            <a asp-controller="ManageAccount" asp-action="AllAccount" class="btn btn-primary">
+                <i class="fa fa-arrow-left"></i> Back
+            </a>
+        </div>
+   
+    </form>
+</div>
+
+
+<!-- Basic Styles -->
+<style>
+    .page-wrapper {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group label {
+        font-weight: bold;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+</style>

@@ -50,9 +50,16 @@ namespace Team7MVC.DAL.Repositories
         {
             return await _systemAccountDAO.UpdateAccount(model);
         }
-        public async Task DeleteAccountById(int accountID)
+       
+        public async Task<bool> DeleteAccount(int accountId)
+
         {
-             await _systemAccountDAO.DeleteAccountById(accountID);                     
+           return await _systemAccountDAO.DeleteAccount(accountId);                     
         }
+        public async Task<bool> AddAccount(SystemAccountDTOAdd model)
+        {
+            return await _systemAccountDAO.AddAccount(model);
+        }
+
     }
 }
