@@ -13,16 +13,21 @@
 
 <script>
     console.log("Script loaded successfully!");
-    document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
         console.log("Script loaded successfully!");
 
         var editModal = document.getElementById("editCategoryModal");
-        var isExpanded = this.getAttribute("aria-expanded") === "true";
         if (!editModal) {
             console.error("Modal element not found.");
             return;
         }
-           this.style.color = isExpanded ? "#dc3545" : "#007bff";
+
+        var toggleButton = document.querySelector('[aria-expanded]'); // Chọn phần tử có aria-expanded
+        if (toggleButton) {
+            var isExpanded = toggleButton.getAttribute("aria-expanded") === "true";
+            toggleButton.style.color = isExpanded ? "#dc3545" : "#007bff";
+        }
+
         editModal.addEventListener("show.bs.modal", function (event) {
             console.log("Modal is opening!");
 
@@ -51,6 +56,7 @@
             document.getElementById("editIsActive").checked = isActive;
         });
     });
+
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".toggle-news").forEach(button => {
             button.addEventListener("click", function () {
