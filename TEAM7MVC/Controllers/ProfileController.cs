@@ -62,22 +62,26 @@ namespace Team7MVC.Controllers
 
         // xu ly cap nhat tt
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> Edit(ProfileViewModel profileViewModel)
         {
             if (!ModelState.IsValid)
                 return View(profileViewModel);
 
-            var existingAccount = await _services.GetAccountByEmailAsync(profileViewModel.AccountEmail);
+            var existingAccount = await _services.GetAccountById(profileViewModel.AccountId);
             if (existingAccount == null)
                 return NotFound();
 
             existingAccount.AccountName = profileViewModel.AccountName;
+            existingAccount.AccountEmail = profileViewModel.AccountEmail;
+            existingAccount.AccountRole = profileViewModel.AccountRole;
 
             await _services.UpdateProfileAsync(existingAccount);
 
             TempData["SuccessMessage"] = "Profile updated successfully!";
             return RedirectToAction("Index");
         }
+
         public async Task<IActionResult> NewsHistory()
         {
             string email = User.FindFirstValue(ClaimTypes.Email);
@@ -86,17 +90,21 @@ namespace Team7MVC.Controllers
             if (account == null)
                 return NotFound();
 
+            var createdArticles = account.NewsArticleCreatedBies.ToList();
+            var updatedArticles = account.NewsArticleUpdatedBies.ToList();
+
             var profileViewModel = new ProfileViewModel
             {
                 AccountId = account.AccountId,
                 AccountName = account.AccountName,
                 AccountEmail = account.AccountEmail,
                 AccountRole = account.AccountRole,
-                NewsArticleCreatedBies = account.NewsArticleCreatedBies,
-                NewsArticleUpdatedBies = account.NewsArticleUpdatedBies
+                NewsArticleCreatedBies = createdArticles,
+                NewsArticleUpdatedBies = updatedArticles
             };
 
             return View(profileViewModel);
         }
+
     }
 }
