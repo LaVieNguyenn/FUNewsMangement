@@ -1,4 +1,4 @@
-using Team7MVC.DAL.Models;
+﻿using Team7MVC.DAL.Models;
 using Team7MVC.DAL.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -67,17 +67,20 @@ namespace Team7MVC.Controllers
             if (!ModelState.IsValid)
                 return View(profileViewModel);
 
-            var existingAccount = await _services.GetAccountByEmailAsync(profileViewModel.AccountEmail);
+            var existingAccount = await _services.GetAccountById(profileViewModel.AccountId);
             if (existingAccount == null)
                 return NotFound();
 
             existingAccount.AccountName = profileViewModel.AccountName;
+            existingAccount.AccountEmail = profileViewModel.AccountEmail;
+            existingAccount.AccountRole = profileViewModel.AccountRole;
 
             await _services.UpdateProfileAsync(existingAccount);
 
             TempData["SuccessMessage"] = "Profile updated successfully!";
             return RedirectToAction("Index");
         }
+
         public async Task<IActionResult> NewsHistory()
         {
             string email = User.FindFirstValue(ClaimTypes.Email);
@@ -85,6 +88,30 @@ namespace Team7MVC.Controllers
 
             if (account == null)
                 return NotFound();
+
+            var createdArticles = account.NewsArticleCreatedBies?.Select(article => new NewArticleViewModel
+            {
+                NewsArticleId = article.NewsArticleId,
+                NewsTitle = article.NewsTitle,
+                Headline = article.Headline,
+                CreatedDate = article.CreatedDate,
+                NewsContent = article.NewsContent,
+                NewsSource = article.NewsSource ?? "N/A",
+                Category = article.Category?.CategoryName ?? "Unknown",
+                CreatedBy = account.AccountName
+            }).ToList();
+
+            var updatedArticles = account.NewsArticleUpdatedBies?.Select(article => new NewArticleViewModel
+            {
+                NewsArticleId = article.NewsArticleId,
+                NewsTitle = article.NewsTitle,
+                Headline = article.Headline,
+                CreatedDate = article.CreatedDate,
+                NewsContent = article.NewsContent,
+                NewsSource = article.NewsSource ?? "N/A",
+                Category = article.Category?.CategoryName ?? "Unknown",
+                CreatedBy = account.AccountName
+            }).ToList();
 
             var profileViewModel = new ProfileViewModel
             {
@@ -95,6 +122,9 @@ namespace Team7MVC.Controllers
                 NewsArticleCreatedBies = account.NewsArticleCreatedBies,
                 NewsArticleUpdatedBies = account.NewsArticleUpdatedBies
             };
+
+            ViewBag.CreatedArticles = createdArticles;
+            ViewBag.UpdatedArticles = updatedArticles;
 
             return View(profileViewModel);
         }

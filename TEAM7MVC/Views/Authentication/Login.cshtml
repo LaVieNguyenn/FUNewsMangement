@@ -39,7 +39,7 @@
                                 <input asp-for="@Model.Email" type="text" class="form-control" placeholder="Email">
                                 <div><span asp-validation-for="@Model.Email" class="text-danger"></span></div>
                                 <label asp-for="@Model.Password"></label><sup>*</sup>
-                                <input asp-for="@Model.Password" class="form-control" placeholder="Password" />
+                                <input asp-for="@Model.Password" class="form-control" type="password" placeholder="Password" />
                                 <div><span asp-validation-for="@Model.Password" class="text-danger"></span></div>
                                 <button type="submit" class="btn btn-primary">Login <i class="fa fa-envelope-open-o"></i></button>
 

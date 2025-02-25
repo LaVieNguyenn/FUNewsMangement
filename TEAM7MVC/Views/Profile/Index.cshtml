@@ -5,15 +5,16 @@
 
 <h2>My Profile</h2>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">@Model.AccountName</h4>
+        <p class="card-text">
+            <strong>Email:</strong> @Model.AccountEmail <br />
+            <strong>Role:</strong> @Model.AccountRole <br />
+            <strong>Account ID:</strong> @Model.AccountId
+        </p>
 
-<table class="table">
-    <tr><th>Email</th><td>@Model.AccountEmail</td></tr>
-    <tr><th>Full Name</th><td>@Model.AccountName</td></tr>
-    <tr><th>Role</th><td>@Model.AccountRole</td></tr>
-</table>
-
-<a asp-action="Edit" class="btn btn-primary">Edit Profile</a>
+        <a asp-action="Edit" class="btn btn-primary">Edit Profile</a>
+        <a asp-action="NewsHistory" class="btn btn-info">View News History</a>
+    </div>
+</div>
