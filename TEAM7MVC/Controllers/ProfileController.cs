@@ -1,4 +1,4 @@
-using Team7MVC.DAL.Models;
+﻿using Team7MVC.DAL.Models;
 using Team7MVC.DAL.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -62,7 +62,6 @@ namespace Team7MVC.Controllers
 
         // xu ly cap nhat tt
         [HttpPost]
-        [HttpPost]
         public async Task<IActionResult> Edit(ProfileViewModel profileViewModel)
         {
             if (!ModelState.IsValid)
@@ -90,8 +89,29 @@ namespace Team7MVC.Controllers
             if (account == null)
                 return NotFound();
 
-            var createdArticles = account.NewsArticleCreatedBies.ToList();
-            var updatedArticles = account.NewsArticleUpdatedBies.ToList();
+            var createdArticles = account.NewsArticleCreatedBies?.Select(article => new NewArticleViewModel
+            {
+                NewsArticleId = article.NewsArticleId,
+                NewsTitle = article.NewsTitle,
+                Headline = article.Headline,
+                CreatedDate = article.CreatedDate,
+                NewsContent = article.NewsContent,
+                NewsSource = article.NewsSource ?? "N/A",
+                Category = article.Category?.CategoryName ?? "Unknown",
+                CreatedBy = account.AccountName
+            }).ToList();
+
+            var updatedArticles = account.NewsArticleUpdatedBies?.Select(article => new NewArticleViewModel
+            {
+                NewsArticleId = article.NewsArticleId,
+                NewsTitle = article.NewsTitle,
+                Headline = article.Headline,
+                CreatedDate = article.CreatedDate,
+                NewsContent = article.NewsContent,
+                NewsSource = article.NewsSource ?? "N/A",
+                Category = article.Category?.CategoryName ?? "Unknown",
+                CreatedBy = account.AccountName
+            }).ToList();
 
             var profileViewModel = new ProfileViewModel
             {
@@ -99,12 +119,14 @@ namespace Team7MVC.Controllers
                 AccountName = account.AccountName,
                 AccountEmail = account.AccountEmail,
                 AccountRole = account.AccountRole,
-                NewsArticleCreatedBies = createdArticles,
-                NewsArticleUpdatedBies = updatedArticles
+                NewsArticleCreatedBies = account.NewsArticleCreatedBies,
+                NewsArticleUpdatedBies = account.NewsArticleUpdatedBies
             };
+
+            ViewBag.CreatedArticles = createdArticles;
+            ViewBag.UpdatedArticles = updatedArticles;
 
             return View(profileViewModel);
         }
-
     }
 }
