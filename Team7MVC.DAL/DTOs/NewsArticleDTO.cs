@@ -27,5 +27,7 @@ namespace Team7MVC.DAL.DTOs
         {
             get; set;
         }
+
+        public string? NewsStatus { get; set; }
     }
 }

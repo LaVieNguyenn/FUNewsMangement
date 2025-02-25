@@ -5,7 +5,7 @@ namespace Team7MVC.DAL.Models;
 
 public partial class NewsArticle
 {
-    public int NewsArticleId { get; set; }
+    public int? NewsArticleId { get; set; }
 
     public string NewsTitle { get; set; } = null!;
 

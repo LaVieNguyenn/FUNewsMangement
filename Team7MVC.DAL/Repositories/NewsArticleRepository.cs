@@ -17,6 +17,10 @@ namespace Team7MVC.DAL.Repositories
             _newArticleDAO = newArticleDAO;
         }
 
+        public Task CreateNews(NewsArticleUpdateDTO newsArticle) => _newArticleDAO.CreateNews(newsArticle);
+
+        public Task Delete(int id) => _newArticleDAO.Delete(id);    
+
         public Task<IEnumerable<NewsArticleDTO>> GetAllNewestAriticlesAsync()
         {
             return _newArticleDAO.GetAllAsync();
@@ -36,5 +40,7 @@ namespace Team7MVC.DAL.Repositories
         {
             return _newArticleDAO.GetByIdAsync(id);
         }
+
+        public Task UpdateNews(NewsArticleUpdateDTO newsArticle) => _newArticleDAO.UpdateNews(newsArticle); 
     }
 }

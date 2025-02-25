@@ -28,6 +28,7 @@ namespace Team7MVC
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("StaffOnly", policy => policy.RequireRole("Staff"));
+                options.AddPolicy("AdminOrStaff", policy => policy.RequireRole("Admin", "Staff"));
             });
             builder.Services.AddHttpContextAccessor();
             //New Article

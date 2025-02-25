@@ -1,0 +1,344 @@
+﻿@using Team7MVC.BLL.Services.CategoryService
+@using Team7MVC.BLL.Services.NewsArticleService
+@using Microsoft.AspNetCore.Http
+@model ManageNewsViewModel
+@inject IHttpContextAccessor _httpContextAccessor
+@{
+    var userId = _httpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    var userName = _httpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
+    var categoryDictionary = Model.Categories.ToDictionary(c => c.CategoryName, c => c.CategoryId);
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Add these inside <head> -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+    console.log("Script loaded successfully!");
+        document.addEventListener("DOMContentLoaded", function () {
+        console.log("Script loaded successfully!");
+
+        var editModal = document.getElementById("editCategoryModal");
+        if (!editModal) {
+            console.error("Modal element not found.");
+            return;
+        }
+
+        var toggleButton = document.querySelector('[aria-expanded]'); // Chọn phần tử có aria-expanded
+        if (toggleButton) {
+            var isExpanded = toggleButton.getAttribute("aria-expanded") === "true";
+            toggleButton.style.color = isExpanded ? "#dc3545" : "#007bff";
+        }
+
+        editModal.addEventListener("show.bs.modal", function (event) {
+            console.log("Modal is opening!");
+
+            var button = event.relatedTarget; // Button that triggered the modal
+            if (!button) {
+                console.error("No button detected.");
+                return;
+            }
+
+            console.log("Button clicked, extracting data...");
+
+            // Extract data attributes
+            var id = button.getAttribute("data-id");
+            var title = button.getAttribute("data-title")
+            var headline = button.getAttribute("data-headline");
+            var content = button.getAttribute("data-newscontent");
+            var createDate = button.getAttribute("data-createdate");
+            var newSource = button.getAttribute("data-newssource");
+            var Cate = button.getAttribute("data-category");
+            var status = button.getAttribute("data-status");
+            var CreatedBy = button.getAttribute("data-createdby");
+            var categoryDictionary = @Html.Raw(Json.Serialize(categoryDictionary)); 
+
+
+            // Set values inside the modal
+            document.getElementById("editNewsArticleId").value = id || "";
+            document.getElementById("editNewsTitle").value = title || "";
+            document.getElementById("editHeadline").value = headline || "";
+            document.getElementById("editNewsContent").value = content || "";
+            document.getElementById("editCreatedDate").value = createDate || "";
+            document.getElementById("editNewsSource").value = newSource || "";
+            document.getElementById("editCreatedBy").value = CreatedBy || "";
+            document.getElementById("editNewsStatus").value = status || "";
+            document.getElementById("editCategory").value = categoryDictionary[Cate] || "";
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".toggle-news").forEach(button => {
+            button.addEventListener("click", function () {
+                var target = document.querySelector(this.getAttribute("data-target"));
+                if (target) {
+                    var isVisible = target.style.display === "block";
+                    target.style.display = isVisible ? "none" : "block";
+                    this.textContent = isVisible ? "Show Related News" : "Hide Related News";
+                     this.classList.toggle("btn-info", isVisible);
+                this.classList.toggle("btn-danger", !isVisible);
+                }
+            });
+        });
+    });
+       document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".toggle-babyNews").forEach(button => {
+            button.addEventListener("click", function () {
+                var targetId = this.getAttribute("data-target");
+                var target = document.querySelector(targetId);
+
+                if (target) {
+                    var isVisible = target.style.display === "block";
+                    target.style.display = isVisible ? "none" : "block";
+                    this.textContent = isVisible ? "Show Sub-Category Related News" : "Hide Related News";
+                     this.classList.toggle("btn-info", isVisible);
+                this.classList.toggle("btn-danger", !isVisible);
+                }
+            });
+        });
+    });
+
+</script>
+
+
+
+<div class="page-title">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                <h2><i class="fa fa-th"></i> News Management </h2>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                    <li class="breadcrumb-item active">News Management</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <div class="row" style="justify-content:center">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" style="width:100%">
+                <div class="page-wrapper">
+                    <h3>News List</h3>
+
+                    <!-- Add New Category Button -->
+                    <button class="btn btn-primary mb-3" data-bs-toggle="collapse" data-bs-target="#addCategoryForm" aria-expanded="false" aria-controls="addCategoryForm">Add New News</button>
+
+                    <!-- Add New Category Form (Hidden initially) -->
+                    <div id="addCategoryForm" class="collapse">
+                        <form asp-controller="News" asp-action="CreateNews" class="mb-3">
+                            <div class="mb-3">
+                                <label for="CategoryName" class="form-label">NewsTitle</label>
+                                <input type="text" asp-for="@Model.NewsTitle" class="form-control" id="NewsTitle" name="NewsTitle" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="CategoryDescription" class="form-label">Headline</label>
+                                <input type="text" asp-for="@Model.Headline" class="form-control" id="Headline" name="Headline" required>
+                            </div> 
+                            <div class="mb-3">
+                                <label for="CategoryDescription" class="form-label">NewsContent</label>
+                                <input type="text" asp-for="@Model.NewsContent" class="form-control" id="NewsContent" name="NewsContent" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="CategoryDescription" class="form-label">NewsSource</label>
+                                <input type="text" asp-for="@Model.NewsSource" class="form-control" id="NewsSource" name="NewsSource" required>
+                            </div>
+                                                        <div class="mb-3">
+                                <label for="CategoryDescription" class="form-label">CreatedBy</label>
+                                <input type="text" class="form-control" value="@userName" readonly>
+                                <input type="hidden" asp-for="@Model.CreatedById" class="form-control" id="CreatedBy" name="CreatedById" value="@int.Parse(userId!)">
+                            </div>
+                            <div class="mb-3">
+                                <label for="ParentCategoryId" class="form-label">Category</label>
+                                <select asp-for="@Model.CategoryId" class="form-control" id="CategoryId" name="CategoryId" required>
+                                    <option value="">None</option>
+                                    @foreach (var category in Model.Categories.Where(c => c.ParentCategoryId == null))
+                                    {
+                                        <option value="@category.CategoryId">@category.CategoryName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="IsActive" class="form-label">Is Active</label>
+                                <input type="checkbox" id="IsActive" asp-for="@Model.NewsStatus" name="NewsStatus">
+                                <span> Tick to activate the news</span>
+                            </div>
+                            <button type="submit" class="btn btn-success">Save Category</button>
+                        </form>
+                    </div>
+
+                </div>
+
+                <!-- Modal for Editing Category -->
+
+                <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editCategoryModalLabel">Edit NewsArticle</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editCategoryForm" asp-controller="News" asp-action="UpdateNews">
+
+                                    <!-- Hidden field for CategoryId -->
+                                    <!-- Hidden field for CategoryId -->
+                                    <input type="hidden" id="editNewsArticleId" name="NewsArticleId" />
+
+                                    <div class="mb-3">
+                                        <label for="NewsTitle" class="form-label">NewsTitle</label>
+                                        <input type="text" id="editNewsTitle" name="NewsTitle" class="form-control" required />
+                                    </div>         
+                                    <div class="mb-3">
+                                        <label for="editHeadline" class="form-label">Headline</label>
+                                        <input type="text" id="editHeadline" name="Headline" class="form-control" required />
+                                    </div>   
+                                    <div class="mb-3">
+                                        <label for="editNewsContent" class="form-label">NewsContent</label>
+                                        <input type="text" id="editNewsContent" name="NewsContent" class="form-control" required />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editCreatedDate" class="form-label">CreatedDate</label>
+                                        <input type="text" id="editCreatedDate" name="CreatedDate" class="form-control" readonly />
+                                    </div>
+                                                                        <div class="mb-3">
+                                        <label for="editNewsSource" class="form-label">NewsSource</label>
+                                        <input type="text" id="editNewsSource" name="NewsSource" class="form-control" required />
+                                    </div>
+                                    <div class="mb-3">
+                                            <label for="editCreatedBy" class="form-label">CreatedBy</label>
+                                        <input type="hidden" asp-for="@Model.CreatedById" class="form-control" id="CreatedBy" name="CreatedById" value="@int.Parse(userId!)">
+                                            <input type="text" id="editCreatedBy" name="CreatedBy" class="form-control" readonly />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editCategory" class="form-label">Categories</label>
+                                <select id="editCategory" name="CategoryId" class="form-control">
+                                            <option value="">None</option>
+                                            @foreach (var category in Model.Categories)
+                                            {
+                                                <option value="@category.CategoryId">@category.CategoryName</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="IsActive" class="form-label">Is Active</label>
+                                        <input type="checkbox" id="editNewsStatus" asp-for="@Model.NewsStatus" name="NewsStatus">
+                                        <span> Tick to activate the news</span>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success">Save Changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- List of Categories -->
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>NewsTitle</th>
+                            <th>Headline</th>
+                            <th>NewsContent</th>
+                            <th>CreatedDate</th>
+                            <th>NewsSource</th>
+                            <th>Category</th>
+                            <th>CreatedBy</th>
+                            <th>Status</th>
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var category in Model.NewArticles) // Top-level categories
+                        {
+                            var collapseId = "collapse-" + category.NewsArticleId; // Unique ID for collapse
+
+                            <tr>
+                                <td>@category.NewsTitle</td>
+                                <td>@category.Headline</td>
+                                <td>@category.NewsContent</td>
+                                <td>@category.CreatedDate</td>
+                                <td>@category.NewsSource</td>
+                                <td>@category.Category</td>
+                                <td>@category.CreatedBy</td>
+                                <td>@category.NewsStatus</td>
+
+
+                                <td>
+                                        <!-- Show Update and Delete buttons if no news articles exist for this category or its children -->
+                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCategoryModal"
+                                            data-id="@category.NewsArticleId"
+                                            data-title="@category.NewsTitle"
+                                            data-headline="@category.Headline"
+                                            data-newscontent="@category.NewsContent"
+                                            data-createdate="@category.CreatedDate"
+                                            data-newssource="@category.NewsSource"
+                                            data-category="@category.Category"
+                                            data-createdby="@category.CreatedBy"
+                                            data-status="@category.NewsStatus">
+                                            <i class="fa fa-edit"></i> Update
+                                        </button>
+
+                                    <form asp-controller="News" asp-action="DeleteNews" asp-route-id="@category.NewsArticleId" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this category?');">
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                </td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<style>
+    .toggle-babyNews[aria-expanded="true"] {
+        background-color: #dc3545 !important; /* Red */
+        border-color: #dc3545 !important;
+        color: white !important;
+    }
+
+    .toggle-News[aria-expanded="true"] {
+        background-color: #dc3545 !important; /* Red */
+        border-color: #dc3545 !important;
+        color: white !important;
+    }
+    .category-toggle {
+        color: inherit; /* Use parent text color */
+        text-decoration: none; /* Remove underline */
+    }
+
+        .category-toggle:hover {
+            color: inherit; /* Keep text color the same on hover */
+            text-decoration: underline; /* Add a subtle underline */
+            background-color: cornflowerblue; /* Prevent background color change */
+        }
+
+        .category-toggle[aria-expanded="true"] {
+            background-color: cornflowerblue !important; /* Highlight color when expanded */
+            color: white !important; /* Change text color */
+            border-radius: 5px; /* Optional: Add rounded corners */
+            padding: 5px 10px; /* Optional: Add padding for better appearance */
+        }
+
+        .category-toggle[aria-expanded="false"] {
+            background-color: transparent !important; /* Default state */
+            color: inherit !important;
+        }
+</style>

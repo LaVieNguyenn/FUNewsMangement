@@ -16,6 +16,11 @@ namespace Team7MVC.BLL.Services.NewsArticleService
         {
             _repository = repository;
         }
+
+        public Task CreateNews(NewsArticleUpdateDTO newsArticle) => _repository.CreateNews(newsArticle);
+
+        public Task Delete(int id) => _repository.Delete(id);
+
         public  Task<IEnumerable<NewsArticleDTO>> GetAllNewestNewsAsync()
         {
             return _repository.GetAllNewestAriticlesAsync();
@@ -30,5 +35,7 @@ namespace Team7MVC.BLL.Services.NewsArticleService
         {
             return _repository.GetAllNewsArticlesAsync();
         }
+
+        public Task UpdateNews(NewsArticleUpdateDTO newsArticle) => _repository.UpdateNews(newsArticle);
     }
 }

@@ -91,7 +91,7 @@ namespace Team7MVC.Controllers
 
             var createdArticles = account.NewsArticleCreatedBies?.Select(article => new NewArticleViewModel
             {
-                NewsArticleId = article.NewsArticleId,
+                NewsArticleId = article.NewsArticleId.Value,
                 NewsTitle = article.NewsTitle,
                 Headline = article.Headline,
                 CreatedDate = article.CreatedDate,
@@ -103,7 +103,7 @@ namespace Team7MVC.Controllers
 
             var updatedArticles = account.NewsArticleUpdatedBies?.Select(article => new NewArticleViewModel
             {
-                NewsArticleId = article.NewsArticleId,
+                NewsArticleId = article.NewsArticleId.Value,
                 NewsTitle = article.NewsTitle,
                 Headline = article.Headline,
                 CreatedDate = article.ModifiedDate ?? article.CreatedDate,

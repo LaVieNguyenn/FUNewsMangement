@@ -26,7 +26,7 @@ namespace Team7MVC.DAL.DAOs.NewArticleDAO
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var sql = "SELECT na.NewsArticleID, na.NewsTitle, na.Headline, na.CreatedDate, na.NewsContent, na.NewsSource, c.CategoryName, sa.AccountName FROM NewsArticle na JOIN Category c ON na.CategoryID = c.CategoryID JOIN SystemAccount sa ON na.CreatedByID = sa.AccountID ORDER BY na.CreatedDate DESC";
+                var sql = "SELECT na.NewsArticleID, na.NewsTitle, na.Headline, na.CreatedDate, na.NewsContent, na.NewsSource, c.CategoryName, sa.AccountName, na.NewsStatus FROM NewsArticle na JOIN Category c ON na.CategoryID = c.CategoryID JOIN SystemAccount sa ON na.CreatedByID = sa.AccountID ORDER BY na.CreatedDate DESC";
                 return await connection.QueryAsync<NewsArticleDTO>(sql);
             }
         }
@@ -67,6 +67,46 @@ namespace Team7MVC.DAL.DAOs.NewArticleDAO
                 await connection.OpenAsync();
                 var sql = "SELECT * FROM NewsArticle ORDER BY NewsArticleID DESC";
                 return await connection.QueryAsync<NewsArticle>(sql);
+            }
+        }
+
+        public async Task CreateNews(NewsArticleUpdateDTO newsArticle)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var sql = "INSERT INTO [FUNewsManagement].[dbo].[NewsArticle] ([NewsTitle], [Headline], [CreatedDate], [NewsContent], [NewsSource], [CategoryID], [NewsStatus], [CreatedByID], [UpdatedByID], [ModifiedDate]) VALUES (@NewsTitle, @Headline, @CreatedDate, @NewsContent, @NewsSource, @CategoryId, @NewsStatus, @CreatedById, NULL, NULL)";
+                await connection.ExecuteAsync(sql,newsArticle);
+            }
+        }
+
+        public async Task UpdateNews(NewsArticleUpdateDTO newsArticle)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var sql = @"UPDATE [FUNewsManagement].[dbo].[NewsArticle] 
+                        SET 
+                            [NewsTitle] = @NewsTitle, 
+                            [Headline] = @Headline, 
+                            [NewsContent] = @NewsContent, 
+                            [NewsSource] = @NewsSource, 
+                            [CategoryID] = @CategoryId, 
+                            [NewsStatus] = @NewsStatus, 
+                            [UpdatedByID] = @CreatedById, 
+                            [ModifiedDate] = GETDATE()
+                        WHERE NewsArticleID = @NewsArticleId";
+                await connection.ExecuteAsync(sql, newsArticle);
+            }
+        }
+
+        public async Task Delete(int id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var sql = "DELETE FROM [FUNewsManagement].[dbo].[NewsArticle] WHERE NewsArticleID = @Id";
+                await connection.ExecuteAsync(sql, new { Id = id });
             }
         }
     }
