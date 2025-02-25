@@ -14,9 +14,11 @@ namespace Team7MVC.BLL.Services.SystemAccountService
         Task<SystemAccount> GetAccountById(int accountID);
         Task<IEnumerable<SystemAccount>> GetAllAccounts();
         Task<bool> UpdateAccount(SystemAccountDTO model);
-        Task DeleteAccountById(int accountID);
+        Task<bool> DeleteAccount(int accountId);
         Task<SystemAccount?> GetAccountByEmailAsync(string email); // lay tk theo email
         Task UpdateProfileAsync(SystemAccount account); // cap nhat ho so
         Task<SystemAccount> GetAccountWithNewsHistoryAsync(string email);
+        Task<bool> AddAccount(SystemAccountDTOAdd model);
+
     }
 }

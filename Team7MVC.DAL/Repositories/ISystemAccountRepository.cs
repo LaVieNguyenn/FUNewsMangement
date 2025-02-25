@@ -14,9 +14,11 @@ namespace Team7MVC.DAL.Repositories
         Task<SystemAccount> GetAccountById(int accountID);
         Task<IEnumerable<SystemAccount>> GetAllAccounts();
         Task<bool> UpdateAccount(SystemAccountDTO model);
-        Task DeleteAccountById(int accountID);
+        Task<bool> DeleteAccount(int accountId);
         Task<SystemAccount?> GetAccountByEmailAsync(string email); // lay tk theo email
         Task UpdateAccountAsync(SystemAccount account); // cap nhat tk
         Task<SystemAccount> GetAccountWithNewsHistoryAsync(string email);
+        Task<bool> AddAccount(SystemAccountDTOAdd model);
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -131,7 +132,27 @@ namespace Team7MVC.DAL.DAOs.SystemAccountDAO
                 return affectedRows > 0;
             }
         }
-        public async Task DeleteAccountById(int accountID)
+        public async Task<bool> AddAccount(SystemAccountDTOAdd model)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                var sql = @"INSERT INTO SystemAccount (AccountName, AccountEmail, AccountRole, AccountPassword) 
+                    VALUES (@AccountName, @AccountEmail, @AccountRole, @AccountPassword)";
+
+                var affectedRows = await connection.ExecuteAsync(sql, new
+                {
+                    model.AccountName,
+                    model.AccountEmail,
+                    model.AccountRole,
+                    model.AccountPassword
+                });
+
+                return affectedRows > 0;
+            }
+        }
+        public async Task<bool> DeleteAccount(int accountId)
         {
             try
             {
@@ -139,17 +160,27 @@ namespace Team7MVC.DAL.DAOs.SystemAccountDAO
                 {
                     await connection.OpenAsync();
 
-                    var sql = "DELETE FROM SystemAccount WHERE AccountID = @AccountID";
+                    var deleteRelatedData = @"
+                DELETE FROM Tag WHERE AccountID = @AccountID;
+                DELETE FROM Category WHERE AccountID = @AccountID;
+                DELETE FROM NewsArticle WHERE AccountID = @AccountID;
+                DELETE FROM NewsTag WHERE AccountID = @AccountID;
+            ";
+                    await connection.ExecuteAsync(deleteRelatedData, new { AccountID = accountId });
 
-                    await connection.ExecuteAsync(sql, new { AccountID = accountID });
+                    var deleteAccount = "DELETE FROM SystemAccount WHERE AccountID = @AccountID";
+                    var affectedRows = await connection.ExecuteAsync(deleteAccount, new { AccountID = accountId });
 
-                    Console.WriteLine($"Account with ID {accountID} deleted successfully.");
+                    return affectedRows > 0;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting account: {ex.Message}");
+                Console.WriteLine("Lỗi khi xóa: " + ex.Message);
+                return false;
             }
         }
+
+
     }
-    }
+}

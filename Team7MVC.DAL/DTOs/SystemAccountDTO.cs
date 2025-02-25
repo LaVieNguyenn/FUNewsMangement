@@ -12,5 +12,15 @@ namespace Team7MVC.DAL.DTOs
         public string AccountName { get; set; }
         public string AccountEmail { get; set; }
         public string AccountRole { get; set; }
+
     }
+    public class SystemAccountDTOAdd
+    {
+        public string AccountName { get; set; }
+        public string AccountEmail { get; set; }
+        public string AccountRole { get; set; }
+        public string AccountPassword { get; set; }
+
+    }
+
 }

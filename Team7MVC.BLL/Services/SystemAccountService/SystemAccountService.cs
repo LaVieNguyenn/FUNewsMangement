@@ -32,9 +32,9 @@ namespace Team7MVC.BLL.Services.SystemAccountService
         {
             return await _repository.UpdateAccount(model);
         }
-        public async Task DeleteAccountById(int accountID)
+        public async Task<bool> DeleteAccount(int accountId)
         {
-             await _repository.DeleteAccountById(accountID);
+           return await _repository.DeleteAccount(accountId);
         }
         public Task<SystemAccount?> GetAccountByEmailAsync(string email) // lay tk theo email
         {
@@ -50,6 +50,11 @@ namespace Team7MVC.BLL.Services.SystemAccountService
         {
                return _repository.GetAccountWithNewsHistoryAsync(email);
         }
+        public async Task<bool> AddAccount(SystemAccountDTOAdd model)
+        {
+            return await _repository.AddAccount(model);
+        }
+
     }
 }
         

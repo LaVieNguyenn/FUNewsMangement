@@ -29,21 +29,18 @@ namespace Team7MVC.Controllers
 
             return View(manageAccounts);
         }
-        [HttpPost]
-        public async Task<IActionResult> DeleteAccount(int accountID)
+        
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteAccount(int id)
         {
-            try
-            {
-                await _services.DeleteAccountById(accountID);
+            var result = await _services.DeleteAccount(id);
 
-                TempData["SuccessMessage"] = "Account deleted successfully.";
-            }
-            catch (Exception ex)
+            if (result)
             {
-                TempData["ErrorMessage"] = "Error deleting account.";
+                return Json(new { success = true, message = "Account deleted successfully!" });
             }
 
-            return RedirectToAction("AllAccount");
+            return Json(new { success = false, message = "Error deleting account!" });
         }
         [HttpGet]
         public async Task<IActionResult> ViewAccount(int id)
@@ -92,7 +89,28 @@ namespace Team7MVC.Controllers
                 return Json(new { success = false, message = "Error updating account." });
             }
         }
-   
+        [HttpGet("AddAccount")]
+        public IActionResult AddAccount()
+        {
+            return View();
+        }
+        [HttpPost("AddAccount")]
+        public async Task<IActionResult> AddAccount(SystemAccountDTOAdd model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var result = await _services.AddAccount(model);
+            if (result)
+            {
+                return RedirectToAction("AllAccount"); // Chuyển hướng về danh sách tài khoản
+            }
+
+            ViewBag.ErrorMessage = "Error!";
+            return View(model);
+        }
 
     }
 }
