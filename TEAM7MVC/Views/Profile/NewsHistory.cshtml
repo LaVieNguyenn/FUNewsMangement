@@ -5,6 +5,11 @@
 
 <h2>My News History</h2>
 
+<!-- Nút quay lại trang Profile -->
+<a asp-action="Index" asp-controller="Profile" class="btn btn-secondary mb-3">
+    ← Back to Profile
+</a>
+
 @if (!Model.CreatedArticles.Any() && !Model.UpdatedArticles.Any())
 {
     <p>No news articles found.</p>
@@ -75,3 +80,6 @@ else
         </table>
     }
 }
+<a asp-action="Index" asp-controller="Profile" class="btn btn-secondary mt-3">
+     Back to Profile
+</a>
