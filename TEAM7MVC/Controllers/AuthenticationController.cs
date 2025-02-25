@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Abstractions;
 using System.Security.Claims;
@@ -52,6 +53,14 @@ namespace Team7MVC.Controllers
                 else return Redirect("/");
             }
             return View();
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Redirect("/");
         }
     }
 }

@@ -101,6 +101,7 @@
                            }else
                             {
                                 <a asp-controller="ManageAccount" asp-action="AllAccount" style="padding-left: 2rem;" title="logins icons">Hi, @_httpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value</a>
+                                <a asp-controller="Authentication" asp-action="Logout"><img src="~/images/logout.png" style="height: auto;width: 7%; margin-left: 20px"/></a>
                             }
                         </div><!-- end search -->
                     </div><!-- end col -->
