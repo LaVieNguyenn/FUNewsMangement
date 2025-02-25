@@ -13,15 +13,14 @@ namespace Team7MVC.DAL.Repositories.ReportRepository
     {
         public async Task<ReportData> GetReportData(DateTime startDate, DateTime endDate)
         {
-            // Logic để lấy dữ liệu báo cáo từ DB
-            // Dữ liệu mẫu cho ví dụ
+            
             ReportData reportData = new ReportData
             {
                 StartDate = startDate,
                 EndDate = endDate,
-                ReportName = "Sample Report",
-                Quantity = 100,
-                Total = 1000.50m
+                ReportName = "Report",
+                Quantity = 18,
+                Total = 100.50m
             };
             return reportData;
         }
