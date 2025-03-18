@@ -1,28 +1,45 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Team7MVC.DAL.Models;
-
-using System;
-using System.Threading.Tasks;
-using Team7MVC.DAL.Repositories.ReportRepository;
-using Team7MVC.DAL.Models;
+using Team7MVC.DAL.DTOs;
+using Team7MVC.DAL.Repositories;
 
 namespace Team7MVC.BLL.Services.ReportService
 {
     public class ReportService : IReportService
     {
-        private readonly IReportRepository _repository;
+        private readonly INewsArticleRepository _newsArticleRepository;
 
-        public ReportService(IReportRepository reportRepository)
+        public ReportService(INewsArticleRepository newsArticleRepository)
         {
-            _repository = reportRepository;
+            _newsArticleRepository = newsArticleRepository;
         }
 
-        public Task<ReportData> GenerateReport(DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<NewsArticleDTO>> GetNewsReportByCategoryAsync(string categoryName)
         {
-            return _repository.GetReportData(startDate, endDate);
+            // Lấy tất cả bài báo theo danh mục từ repository
+            var articles = await _newsArticleRepository.GetAllNewestAriticlesAsyncByAsync(categoryName, int.MaxValue);
+            return articles;
         }
+
+        public async Task<IEnumerable<NewsArticleDTO>> GetNewsReportByCategoryAndDateAsync(string categoryName, DateTime startDate, DateTime endDate)
+        {
+            IEnumerable<NewsArticleDTO> articles;
+
+            // Nếu categoryName null hoặc rỗng, gọi hàm lấy tất cả
+            if (string.IsNullOrWhiteSpace(categoryName))
+            {
+                articles = await _newsArticleRepository.GetAllNewestAriticlesAsync();
+            }
+            else
+            {
+                articles = await _newsArticleRepository.GetAllNewestAriticlesAsyncByAsync(categoryName, int.MaxValue);
+            }
+
+            // Lọc theo ngày
+            return articles.Where(a => a.CreatedDate >= startDate && a.CreatedDate <= endDate);
+        }
+
     }
 }
-
