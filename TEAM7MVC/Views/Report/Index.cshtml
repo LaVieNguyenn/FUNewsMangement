@@ -1,0 +1,133 @@
+﻿@using System.Text.Json
+@model dynamic
+
+@{
+    ViewData["Title"] = "Report Index";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">News Report Dashboard</h2>
+    <div class="row">
+        <!-- Cột bộ lọc báo cáo -->
+        <div class="col-md-4 bg-light p-4 rounded shadow-sm">
+            <h4 class="text-center mb-3">Filter Reports</h4>
+            <form method="get" asp-action="Index">
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category:</label>
+                    <select id="category" name="categoryName" class="form-control">
+                        <option value="">All Categories</option>
+                        @foreach (var category in Model.Categories)
+                        {
+                            if (Model.SelectedCategory == category.CategoryName)
+                            {
+                                <option value="@category.CategoryName" selected="selected">
+                                    @category.CategoryName
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@category.CategoryName">
+                                    @category.CategoryName
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="fromDate" class="form-label">From Date:</label>
+                    <input type="date"
+                           id="fromDate"
+                           name="startDate"
+                           class="form-control"
+                           value="@(Model.StartDate == DateTime.MinValue ? "" : Model.StartDate.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="mb-3">
+                    <label for="toDate" class="form-label">To Date:</label>
+                    <input type="date"
+                           id="toDate"
+                           name="endDate"
+                           class="form-control"
+                           value="@(Model.EndDate == DateTime.MaxValue ? "" : Model.EndDate.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Cột kết quả báo cáo -->
+        <div class="col-md-8">
+            @if (Model.Reports != null && Model.Reports.Count > 0)
+            {
+                <h4 class="text-center">Report Results</h4>
+                <table class="table table-bordered table-hover mt-3">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Author</th>
+                            <th>Created Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var report in Model.Reports)
+                        {
+                            <tr>
+                                <td>@report.NewsTitle</td>
+                                <td>@report.CategoryName</td>
+                                <td>@report.AccountName</td>
+                                <td>@report.CreatedDate.ToShortDateString()</td>
+                                <td>@report.NewsStatus</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <!-- Biểu đồ hình tròn -->
+                <div class="mt-4">
+                    <h4 class="text-center">Category Distribution</h4>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            }
+            else
+            {
+                <p class="text-center text-danger mt-3">No reports found for the selected criteria.</p>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById("categoryChart");
+        if (!ctx) return;
+
+        // Sử dụng System.Text.Json để serialize dữ liệu CategoryDistribution
+        var categoryData = @Html.Raw(JsonSerializer.Serialize(Model.CategoryDistribution ?? new { }));
+        var labels = Object.keys(categoryData);
+        var data = Object.values(categoryData);
+
+        new Chart(ctx, {
+            type: "pie",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Articles per Category",
+                    data: data,
+                    backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4CAF50", "#BA68C8"]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    }
+                }
+            }
+        });
+    });
+</script>
